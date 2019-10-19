@@ -1,0 +1,41 @@
+const meeting = require('../services/meeting');
+const session = require('../services/session');
+var Datastore = require('nedb');
+
+test('getSessionById', function() {
+    var db =  new Datastore({ 
+        autoload: true
+    });
+    
+    function meetingSaved(record) {
+        expect(record._id.length).toBeGreaterThan(1);
+
+        const result = session.id(record, 12);
+        expect(result).toBe(null);
+    }
+
+    meeting.new(db, "Team Meeting", meetingSaved)
+});
+
+test('createSession', function() {
+    var db =  new Datastore({ 
+        autoload: true
+    });
+    
+    function meetingSaved(record) {
+        expect(record._id.length).toBeGreaterThan(1);
+
+        var obj = session.new(db, record, 'First monday of the month','21/10/2019', 2);
+        expect(obj.sessions.length).toBe(1);
+        expect(obj.sessions[0].date).toBe('21/10/2019');
+        expect(obj.sessions[0].name).toBe('First monday of the month');
+        expect(obj.sessions[0].durationInHours).toBe(2);
+        expect(obj.sessions[0].finish).toBe(false);
+        meeting.save(db, obj, meetingChanged);
+    }
+    function meetingChanged(record) {
+        expect(record).toBe(1);
+    }
+
+    meeting.new(db, "Team Meeting", meetingSaved)
+});
