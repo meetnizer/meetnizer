@@ -24,9 +24,7 @@ function createConfigFile(appPath, dbFile) {
 function saveConfig(appPath, config) {
     fs.writeFileSync(
         getConfigFileName(appPath), 
-        JSON.stringify(config),
-        null,
-        4);
+        JSON.stringify(config, null, 4));
 }
 module.exports = 
     { 
