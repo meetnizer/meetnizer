@@ -1,0 +1,5 @@
+var tags = require('../lib/tags')
+
+test('getTags("")', function () {
+  expect(tags.getTags('').length).toBe(0)
+})
