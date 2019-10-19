@@ -1,0 +1,39 @@
+function newMeeting(db, name, callback) {
+    db.find({name: name}, (err, recordSet) => {
+        if (err) return callback(err);
+
+        if (recordSet.length) {
+            throw new Error("meeting.record.exists");
+        }
+
+        var data = {
+            name: name, 
+            sessions:[]
+        };
+
+        db.insert( data, (err, recordSet) => {
+            if (err) return callback(err);
+            
+            callback(recordSet);
+        });
+    });
+}
+
+function getById(db, id, callback) {
+    db.findOne({_id: id}, (err, recordSet) => {
+        if (err) return callback(err);
+        
+        callback(recordSet);
+    });
+}
+
+function save(db, obj, callback) {
+    db.update({_id: obj._id}, obj, {}, (err, affectedDocuments) => {
+        callback(affectedDocuments);
+    });
+}
+module.exports = {
+    new: newMeeting,
+    getById: getById,
+    save:save
+}
