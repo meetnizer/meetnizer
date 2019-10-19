@@ -1,7 +1,5 @@
 const meeting = require('../services/meeting');
 var Datastore = require('nedb');
-const appLocalPath = __dirname;
-const fs = require('fs');
 
 test('findById', function() {
     var db =  new Datastore({ 
@@ -11,7 +9,7 @@ test('findById', function() {
     function check(ret) {
         expect(ret).toBe(null);
     }
-    meeting.getById(db,'aaase', check)
+    meeting.id(db,'aaase', check)
 });
 
 test('newMetting', function () {
@@ -20,9 +18,9 @@ test('newMetting', function () {
     });
 
     function validateResultId(ret) {
-        expect(ret._id.length).toBeGreaterThan(0);
+        expect(ret._id.length).toBeGreaterThan(1);
 
-        meeting.getById(db, ret._id, validateResultName)
+        meeting.id(db, ret._id, validateResultName)
     }
     function validateResultName(ret) {
         expect(ret.name).toBe('Team Meeting');
@@ -36,7 +34,7 @@ test('changeMetting', function () {
     });
 
     function validateResultId(ret) {
-        expect(ret._id.length).toBeGreaterThan(0);
+        expect(ret._id.length).toBeGreaterThan(1);
         
         ret.name = "test";
 

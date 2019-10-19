@@ -27,13 +27,14 @@ function getById(db, id, callback) {
     });
 }
 
-function save(db, obj, callback) {
+function saveMeeting(db, obj, callback) {
     db.update({_id: obj._id}, obj, {}, (err, affectedDocuments) => {
         callback(affectedDocuments);
     });
 }
+
 module.exports = {
     new: newMeeting,
-    getById: getById,
-    save:save
+    id: getById,
+    save: saveMeeting
 }
