@@ -1,6 +1,6 @@
 const meeting = require('../services/meeting');
 const session = require('../services/session');
-const momment = require('moment');
+const moment = require('moment');
 var Datastore = require('nedb');
 
 test('getSessionById', function() {
@@ -23,16 +23,19 @@ test('createSession', function() {
         autoload: true
     });
     var id = "";
-    var myDate = momment('21/10/2019', 'dd/MM/yyyy');
+    const myDate = moment('21/10/2019', 'DD/MM/YYYY');
     function meetingSaved(record) {
         expect(record._id.length).toBeGreaterThan(1);
         id = record._id;
+
         var obj = session.addSession(db, record, 'First monday of the month',myDate, 2);
         expect(obj.sessions.length).toBe(1);
-        expect(obj.sessions[0].date).toBe('21/10/2019');
+
+        expect(moment(obj.sessions[0].date).format('DD/MM/YYYY')).toBe('21/10/2019');
         expect(obj.sessions[0].name).toBe('First monday of the month');
         expect(obj.sessions[0].durationInHours).toBe(2);
         expect(obj.sessions[0].finish).toBe(false);
+        
         meeting.saveMeeting(db, obj, meetingChanged);
     }
     function meetingChanged(record) {
@@ -41,10 +44,6 @@ test('createSession', function() {
     }
     function checkResult(record) {
         expect(record.sessions.length).toBe(1);
-
-        var d = record.sessions[0].date;
-        expect(moment(d).format('yyyy/MM/dd')).toBe('2019/10/21');
-
         expect(record.sessions[0].name).toBe('First monday of the month');
         expect(record.sessions[0].durationInHours).toBe(2);
         expect(record.sessions[0].finish).toBe(false);
@@ -52,3 +51,38 @@ test('createSession', function() {
 
     meeting.newMeeting(db, "Team Meeting", meetingSaved)
 });
+
+test('getLastSessionNoData', function() {
+    var db =  new Datastore({
+        autoload: true
+    });
+    
+    function meetingSaved(record) {
+        expect(record._id.length).toBeGreaterThan(1);
+        const lastSession = session.getLastSession(record);
+        expect(lastSession).toBe(null);
+    }
+    meeting.newMeeting(db, "Team Meeting", meetingSaved)
+});
+
+test('getLastSession', function() {
+    var db =  new Datastore({
+        autoload: true
+    });
+    
+    function meetingSaved(record) {
+        expect(record._id.length).toBeGreaterThan(1);
+        id = record._id;
+        
+        session.addSession(db,record, 'test1', moment('21/10/2019', 'DD/MM/YYYY'), 2);
+        session.addSession(db,record, 'test2', moment('21/01/2019', 'DD/MM/YYYY'), 2);
+        session.addSession(db,record, 'test3', moment('21/09/2019', 'DD/MM/YYYY'), 2);
+
+        expect(record.sessions.length).toBe(3);
+
+        const lastSession = session.getLastSession(record);
+        expect(lastSession).not.toBe(null);
+        expect(moment(lastSession.date).format('YYYY/MM/DD')).toBe('2019/01/21');
+    }
+    meeting.newMeeting(db, "Team Meeting", meetingSaved)
+})

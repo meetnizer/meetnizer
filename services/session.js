@@ -19,12 +19,21 @@ function addSession(db, meeting, name, date, durationInHours) {
     return meeting;
 }
 
-function getLastSessionId(meeting) {
-    const session = meeting.sessions[meeting.sessions.length-1];
-    return session.id;
+function getLastSession(meeting) {
+    if (meeting.sessions.length === 0) {
+        return null;
+    }
+    var sessions = meeting.sessions;
+    sessions.sort(function(a,b){
+        a = new Date(a.date);
+        b = new Date(b.date);
+        return a>b ? -1 : a<b ? 1 : 0;
+    })
+    return sessions[sessions.length-1];
 }
 
 module.exports = {
     findById,
-    addSession
+    addSession,
+    getLastSession
 }
