@@ -1,5 +1,3 @@
-const meeting = require('../services/meeting');
-const session = require('../services/session');
 const item = require('../services/item');
 var Datastore = require('nedb');
 const sessionId = "Awdxr";
@@ -80,8 +78,6 @@ test('updateItem', function() {
     function getItem(record) {
         expect(record.done).toBe(false);
         expect(record.comments.length).toBe(1);
-
-        //item.update(db, itemId);
     }
 
     item.new(db, sessionId, "discuss about open source software", "Bruno", 5, saveItem1);
