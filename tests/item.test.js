@@ -83,3 +83,29 @@ test('updateItem', function() {
 
     item.addItem(db, sessionId, "discuss about open source software", "Bruno", 5, saveItem1);
 });
+
+test('setupNewSession', function(){
+    var db =  new Datastore({ 
+        autoload: true
+    });
+    const newSessionId = 'aAeqwda';
+
+    function saveItem1(record) {
+        item.addItem(db, sessionId, "discuss about open source software", "Fabio", 5, saveItem2);    
+    }
+    function saveItem2(record) {
+        item.changeStatus(db, record._id, true, statusChanged);
+    }
+    function statusChanged(record) {
+        item.setupNewSession(db, sessionId, newSessionId, newSessionChanged);
+    }
+    function newSessionChanged(record) {
+        item.findAll(db, newSessionId, validateItems);
+    }
+    function validateItems(records) {
+        expect(records.sessions.length).toBe(1);
+        expect(records.sessions[0].name).toBe("discuss about open source software");
+    }
+
+    item.addItem(db, sessionId, "discuss about open source software", "Bruno", 5, saveItem1);
+});

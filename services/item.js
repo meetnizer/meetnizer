@@ -54,10 +54,30 @@ function addComment(db, itemId, comment, callback) {
         })
     });
 }
+function changeStatus(db, itemId, status, callback) {
+    findById(db, itemId, (record) => {
+        record.done = status;
+        db.update({ _id: itemId}, record, {}, (err,recordSet) => {
+            if (err) callback(err);
+            callback(recordSet);
+        })
+    })
+}
+function setupNewSession(db, sessionId, newSessionId, newSessionChanged) {
+    db.update(
+        {sessions:[sessionId], done: false},
+        {$push: {sessions: newSessionId}}, 
+        {}, (err, recordSet) => {
+            if (err) callback(err);
+
+            callback(recordSet);
+        });
+}
 module.exports = {
     addItem,
     addToSession,
     findById,
     findAll,
-    addComment
+    addComment,
+    changeStatus
 }
