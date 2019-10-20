@@ -41,5 +41,6 @@ function getAllMeetings(db, callback) {
 module.exports = {
     newMeeting,
     findById,
-    saveMeeting
+    saveMeeting,
+    getAllMeetings
 }

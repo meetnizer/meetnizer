@@ -67,4 +67,14 @@ test('getAllMettings', function() {
         expect(record.length).toBe(2);
     }
     meeting.newMeeting(db, 'Team Meeting',saveMeeting1);
-})
+});
+
+test('getAllMettingsNoresult', function() {
+    var db =  new Datastore({ 
+        autoload: true
+    });
+    function checkResult(record) {
+        expect(record.length).toBe(0);
+    }
+    meeting.getAllMeetings(db, checkResult);
+});
