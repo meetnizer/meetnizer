@@ -52,3 +52,19 @@ test('changeMetting', function () {
 
     meeting.newMeeting(db, 'Team Meeting',validateResultId);
 });
+
+test('getAllMettings', function() {
+    var db =  new Datastore({ 
+        autoload: true
+    });
+    function saveMeeting1(record) {
+        meeting.newMeeting(db, 'Project Meeting',saveMeeting2);
+    }
+    function saveMeeting2(record) {
+        meeting.getAllMeetings(db, checkResult);
+    }
+    function checkResult(record) {
+        expect(record.length).toBe(2);
+    }
+    meeting.newMeeting(db, 'Team Meeting',saveMeeting1);
+})

@@ -32,7 +32,12 @@ function saveMeeting(db, obj, callback) {
         callback(affectedDocuments);
     });
 }
-
+function getAllMeetings(db, callback) {
+    db.find({}, (err,recordSet) => {
+        if (err) callback(err);
+        callback(recordSet);
+    }); 
+}
 module.exports = {
     newMeeting,
     findById,
