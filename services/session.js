@@ -19,6 +19,11 @@ function addSession(db, meeting, name, date, durationInHours) {
     return meeting;
 }
 
+function getLastSessionId(meeting) {
+    const session = meeting.sessions[meeting.sessions.length-1];
+    return session.id;
+}
+
 module.exports = {
     findById,
     addSession

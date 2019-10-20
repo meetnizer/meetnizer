@@ -1,5 +1,6 @@
 const meeting = require('../services/meeting');
 const session = require('../services/session');
+const momment = require('moment');
 var Datastore = require('nedb');
 
 test('getSessionById', function() {
@@ -22,11 +23,11 @@ test('createSession', function() {
         autoload: true
     });
     var id = "";
-
+    var myDate = momment('21/10/2019', 'dd/MM/yyyy');
     function meetingSaved(record) {
         expect(record._id.length).toBeGreaterThan(1);
         id = record._id;
-        var obj = session.addSession(db, record, 'First monday of the month','21/10/2019', 2);
+        var obj = session.addSession(db, record, 'First monday of the month',myDate, 2);
         expect(obj.sessions.length).toBe(1);
         expect(obj.sessions[0].date).toBe('21/10/2019');
         expect(obj.sessions[0].name).toBe('First monday of the month');
@@ -40,7 +41,10 @@ test('createSession', function() {
     }
     function checkResult(record) {
         expect(record.sessions.length).toBe(1);
-        expect(record.sessions[0].date).toBe('21/10/2019');
+
+        var d = record.sessions[0].date;
+        expect(moment(d).format('yyyy/MM/dd')).toBe('2019/10/21');
+
         expect(record.sessions[0].name).toBe('First monday of the month');
         expect(record.sessions[0].durationInHours).toBe(2);
         expect(record.sessions[0].finish).toBe(false);
