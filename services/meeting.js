@@ -28,8 +28,8 @@ function findById(db, id, callback) {
 }
 
 function saveMeeting(db, obj, callback) {
-    db.update({_id: obj._id}, obj, {}, (err, affectedDocuments) => {
-        callback(affectedDocuments);
+    db.update({_id: obj._id}, obj, {}, (err, recordSet) => {
+        callback(recordSet);
     });
 }
 function getAllMeetings(db, callback) {

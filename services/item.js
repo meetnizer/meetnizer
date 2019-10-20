@@ -63,7 +63,7 @@ function changeStatus(db, itemId, status, callback) {
         })
     })
 }
-function setupNewSession(db, sessionId, newSessionId, newSessionChanged) {
+function setupNewSession(db, sessionId, newSessionId, callback) {
     db.update(
         {sessions:[sessionId], done: false},
         {$push: {sessions: newSessionId}}, 
