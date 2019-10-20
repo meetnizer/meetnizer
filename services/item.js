@@ -13,7 +13,7 @@ function newItem(db, sessionId, name, owner, time, callback) {
             callback(record);
     });
 }
-function getById(db, itemId, callback) {
+function findById(db, itemId, callback) {
     db.findOne({_id: itemId}, (err,recordSet) => {
         if (err) callback(err);
 
@@ -46,7 +46,7 @@ function findAll(db, sessionId, callback) {
     });
 }
 function addComment(db, itemId, comment, callback) {
-    getById(db,itemId,(record) => {
+    findById(db,itemId,(record) => {
         record.comments.push(comment);
         db.update({ _id: itemId}, record, {}, (err,recordSet) => {
             if (err) callback(err);
@@ -57,7 +57,7 @@ function addComment(db, itemId, comment, callback) {
 module.exports = {
     new: newItem,
     addToSession: addToSession,
-    getById: getById,
+    findById: findById,
     getAll: findAll,
     addComment:addComment
 }

@@ -9,7 +9,7 @@ test('findById', function() {
     function check(ret) {
         expect(ret).toBe(null);
     }
-    meeting.id(db,'aaase', check)
+    meeting.findById(db,'aaase', check)
 });
 
 test('newMetting', function () {
@@ -20,7 +20,7 @@ test('newMetting', function () {
     function validateResultId(ret) {
         expect(ret._id.length).toBeGreaterThan(1);
 
-        meeting.id(db, ret._id, validateResultName)
+        meeting.findById(db, ret._id, validateResultName)
     }
     function validateResultName(ret) {
         expect(ret.name).toBe('Team Meeting');
@@ -43,7 +43,7 @@ test('changeMetting', function () {
     function validateUpdatedRecord(ret) {
         expect(ret).toBe(1);
 
-        meeting.id(db, id, checkResult);
+        meeting.findById(db, id, checkResult);
     }
 
     function checkResult(ret) {

@@ -10,7 +10,7 @@ test('getSessionById', function() {
     function meetingSaved(record) {
         expect(record._id.length).toBeGreaterThan(1);
 
-        const result = session.id(record, 12);
+        const result = session.findById(record, 12);
         expect(result).toBe(null);
     }
 
@@ -36,7 +36,7 @@ test('createSession', function() {
     }
     function meetingChanged(record) {
         expect(record).toBe(1);
-        meeting.id(db, id, checkResult);
+        meeting.findById(db, id, checkResult);
     }
     function checkResult(record) {
         expect(record.sessions.length).toBe(1);

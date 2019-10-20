@@ -19,7 +19,7 @@ function newMeeting(db, name, callback) {
     });
 }
 
-function getById(db, id, callback) {
+function findById(db, id, callback) {
     db.findOne({_id: id}, (err, recordSet) => {
         if (err) return callback(err);
         
@@ -35,6 +35,6 @@ function saveMeeting(db, obj, callback) {
 
 module.exports = {
     new: newMeeting,
-    id: getById,
+    findById: findById,
     save: saveMeeting
 }

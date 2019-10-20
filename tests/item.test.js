@@ -32,7 +32,7 @@ test('addItemToSession', function() {
     }
     function itemSaved(record) {
         expect(1).toBe(1);
-        item.getById(db, itemId, getItem);
+        item.findById(db, itemId, getItem);
     }
     function getItem(record) {
         expect(record.sessions.length).toBe(2);
@@ -72,7 +72,7 @@ test('updateItem', function() {
     function itemUpdated(record) {
         expect(record).toBe(1);
 
-        item.getById(db,itemId,getItem);
+        item.findById(db,itemId,getItem);
     }
 
     function getItem(record) {

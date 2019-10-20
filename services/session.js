@@ -20,6 +20,6 @@ function newSession(db, meeting, name, date, durationInHours) {
 }
 
 module.exports = {
-    id: findById,
+    findById: findById,
     new: newSession
 }
