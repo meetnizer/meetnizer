@@ -103,8 +103,9 @@ test('setupNewSession', function(){
         item.findAll(db, newSessionId, validateItems);
     }
     function validateItems(records) {
-        expect(records.sessions.length).toBe(1);
-        expect(records.sessions[0].name).toBe("discuss about open source software");
+        expect(records.length).toBe(1);
+        expect(records[0].sessions.length).toBe(1);
+        expect(records[0].sessions[0].name).toBe("discuss about open source software");
     }
 
     item.addItem(db, sessionId, "discuss about open source software", "Bruno", 5, saveItem1);
