@@ -32,16 +32,22 @@ test('changeMetting', function () {
     var db =  new Datastore({ 
         autoload: true
     });
-
+    var id = "";
     function validateResultId(ret) {
         expect(ret._id.length).toBeGreaterThan(1);
-        
+        id = ret._id;
         ret.name = "test";
 
         meeting.save(db, ret, validateUpdatedRecord)
     }
     function validateUpdatedRecord(ret) {
         expect(ret).toBe(1);
+
+        meeting.id(db, id, checkResult);
+    }
+
+    function checkResult(ret) {
+        expect(ret.name).toBe("test");
     }
 
     meeting.new(db, 'Team Meeting',validateResultId);

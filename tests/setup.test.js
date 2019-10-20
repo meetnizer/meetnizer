@@ -22,7 +22,6 @@ test('createConfig()', function() {
     const dbPath = `${__dirname}/mydb.db`;
     setup.createConfigFile(appLocalPath, dbPath);
     const config = setup.getConfiguration(appLocalPath);
-    console.log(config);
     expect(config.dbFiles[0]).toBe(dbPath);
     expect(config.timerDefault).toBe(5);
     removeFile();
