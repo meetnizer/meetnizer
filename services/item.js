@@ -79,5 +79,6 @@ module.exports = {
     findById,
     findAll,
     addComment,
-    changeStatus
+    changeStatus,
+    setupNewSession
 }
