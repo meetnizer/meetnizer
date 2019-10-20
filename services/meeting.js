@@ -34,7 +34,7 @@ function saveMeeting(db, obj, callback) {
 }
 
 module.exports = {
-    new: newMeeting,
-    findById: findById,
-    save: saveMeeting
+    newMeeting,
+    findById,
+    saveMeeting
 }

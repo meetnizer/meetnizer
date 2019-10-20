@@ -8,7 +8,7 @@ function findById(meeting, sessionId) {
     return null;
 }
 
-function newSession(db, meeting, name, date, durationInHours) {
+function addSession(db, meeting, name, date, durationInHours) {
     const session = {
         name,
         date,
@@ -20,6 +20,6 @@ function newSession(db, meeting, name, date, durationInHours) {
 }
 
 module.exports = {
-    findById: findById,
-    new: newSession
+    findById,
+    addSession
 }

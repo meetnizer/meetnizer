@@ -14,7 +14,7 @@ test('getSessionById', function() {
         expect(result).toBe(null);
     }
 
-    meeting.new(db, "Team Meeting", meetingSaved)
+    meeting.newMeeting(db, "Team Meeting", meetingSaved)
 });
 
 test('createSession', function() {
@@ -26,13 +26,13 @@ test('createSession', function() {
     function meetingSaved(record) {
         expect(record._id.length).toBeGreaterThan(1);
         id = record._id;
-        var obj = session.new(db, record, 'First monday of the month','21/10/2019', 2);
+        var obj = session.addSession(db, record, 'First monday of the month','21/10/2019', 2);
         expect(obj.sessions.length).toBe(1);
         expect(obj.sessions[0].date).toBe('21/10/2019');
         expect(obj.sessions[0].name).toBe('First monday of the month');
         expect(obj.sessions[0].durationInHours).toBe(2);
         expect(obj.sessions[0].finish).toBe(false);
-        meeting.save(db, obj, meetingChanged);
+        meeting.saveMeeting(db, obj, meetingChanged);
     }
     function meetingChanged(record) {
         expect(record).toBe(1);
@@ -46,5 +46,5 @@ test('createSession', function() {
         expect(record.sessions[0].finish).toBe(false);
     }
 
-    meeting.new(db, "Team Meeting", meetingSaved)
+    meeting.newMeeting(db, "Team Meeting", meetingSaved)
 });

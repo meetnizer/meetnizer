@@ -25,7 +25,7 @@ test('newMetting', function () {
     function validateResultName(ret) {
         expect(ret.name).toBe('Team Meeting');
     }
-    meeting.new(db, 'Team Meeting',validateResultId);
+    meeting.newMeeting(db, 'Team Meeting',validateResultId);
 });
 
 test('changeMetting', function () {
@@ -38,7 +38,7 @@ test('changeMetting', function () {
         id = ret._id;
         ret.name = "test";
 
-        meeting.save(db, ret, validateUpdatedRecord)
+        meeting.saveMeeting(db, ret, validateUpdatedRecord)
     }
     function validateUpdatedRecord(ret) {
         expect(ret).toBe(1);
@@ -50,5 +50,5 @@ test('changeMetting', function () {
         expect(ret.name).toBe("test");
     }
 
-    meeting.new(db, 'Team Meeting',validateResultId);
+    meeting.newMeeting(db, 'Team Meeting',validateResultId);
 });
