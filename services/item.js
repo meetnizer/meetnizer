@@ -1,4 +1,4 @@
-function newItem(db, sessionId, name, owner, time, callback) {
+function addItem(db, sessionId, name, owner, time, callback) {
     db.insert(
         {
             name,
@@ -55,9 +55,9 @@ function addComment(db, itemId, comment, callback) {
     });
 }
 module.exports = {
-    new: newItem,
-    addToSession: addToSession,
-    findById: findById,
-    getAll: findAll,
-    addComment:addComment
+    addItem,
+    addToSession,
+    findById,
+    findAll,
+    addComment
 }

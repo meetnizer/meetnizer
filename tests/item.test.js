@@ -17,7 +17,7 @@ test('saveItem', function() {
         expect(record.done).toBe(false);
     }
 
-    item.new(db, sessionId, "discuss about open source software", "Bruno", 5, getItemId);
+    item.addItem(db, sessionId, "discuss about open source software", "Bruno", 5, getItemId);
 });
 
 test('addItemToSession', function() {
@@ -39,7 +39,7 @@ test('addItemToSession', function() {
         expect(record.sessions[1]).toBe("df45va325");
     }
 
-    item.new(db, sessionId, "discuss about open source software", "Bruno", 5, getItemId);
+    item.addItem(db, sessionId, "discuss about open source software", "Bruno", 5, getItemId);
 });
 
 test('getAllItemsForSession', function() {
@@ -47,15 +47,15 @@ test('getAllItemsForSession', function() {
         autoload: true
     });
     function saveItem1(record) {
-        item.new(db, sessionId, "discuss about open source software", "Fabio", 5, saveItem2);    
+        item.addItem(db, sessionId, "discuss about open source software", "Fabio", 5, saveItem2);    
     }
     function saveItem2(record) {
-        item.getAll(db, sessionId, validateItems);
+        item.findAll(db, sessionId, validateItems);
     }
     function validateItems(items) {
         expect(items.length).toBe(2);
     }
-    item.new(db, sessionId, "discuss about open source software", "Bruno", 5, saveItem1);
+    item.addItem(db, sessionId, "discuss about open source software", "Bruno", 5, saveItem1);
 });
 
 test('updateItem', function() {
@@ -80,5 +80,5 @@ test('updateItem', function() {
         expect(record.comments.length).toBe(1);
     }
 
-    item.new(db, sessionId, "discuss about open source software", "Bruno", 5, saveItem1);
+    item.addItem(db, sessionId, "discuss about open source software", "Bruno", 5, saveItem1);
 });
