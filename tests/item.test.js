@@ -36,6 +36,7 @@ test('addItemToSession', function() {
     }
     function getItem(record) {
         expect(record.sessions.length).toBe(2);
+        expect(record.sessions[0]).toBe(sessionId);
         expect(record.sessions[1]).toBe("df45va325");
     }
 
