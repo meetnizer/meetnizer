@@ -7,7 +7,8 @@ test('saveItem', function () {
     autoload: true
   })
 
-  function getItemId (record) {
+  function getItemId (err, record) {
+    expect(err).toBe(null);
     expect(record._id.length).toBeGreaterThan(1)
     expect(record.name).toBe('discuss about open source software')
     expect(record.owner).toBe('Bruno')
@@ -25,16 +26,18 @@ test('addItemToSession', function () {
     autoload: true
   })
   var itemId = ''
-  function getItemId (record) {
+  function getItemId (err, record) {
+    expect(err).toBe(null);
     expect(record._id.length).toBeGreaterThan(1)
     itemId = record._id
     item.addToSession(db, record._id, 'df45va325', itemSaved)
   }
-  function itemSaved (record) {
-    expect(1).toBe(1)
+  function itemSaved (err, record) {
+    expect(err).toBe(null);
     item.findById(db, itemId, getItem)
   }
-  function getItem (record) {
+  function getItem (err, record) {
+    expect(err).toBe(null);
     expect(record.sessions.length).toBe(2)
     expect(record.sessions[0]).toBe(sessionId)
     expect(record.sessions[1]).toBe('df45va325')
@@ -47,13 +50,16 @@ test('getAllItemsForSession', function () {
   var db = new Datastore({
     autoload: true
   })
-  function saveItem1 (record) {
+  function saveItem1 (err, record) {
+    expect(err).toBe(null);
     item.addItem(db, sessionId, 'discuss about open source software', 'Fabio', 5, saveItem2)
   }
-  function saveItem2 (record) {
+  function saveItem2 (err, record) {
+    expect(err).toBe(null);
     item.findAll(db, sessionId, validateItems)
   }
-  function validateItems (items) {
+  function validateItems (err, items) {
+    expect(err).toBe(null);
     expect(items.length).toBe(2)
   }
   item.addItem(db, sessionId, 'discuss about open source software', 'Bruno', 5, saveItem1)
@@ -64,19 +70,22 @@ test('updateItem', function () {
     autoload: true
   })
   var itemId = ''
-  function saveItem1 (record) {
+  function saveItem1 (err, record) {
+    expect(err).toBe(null);
     itemId = record._id
 
     item.addComment(db, itemId, 'For the next meeting talk about the nginx server', itemUpdated)
   }
 
-  function itemUpdated (record) {
-    expect(record).toBe(1)
+  function itemUpdated (err, record) {
+    expect(err).toBe(null);
+    expect(record).toBe(1);
 
     item.findById(db, itemId, getItem)
   }
 
-  function getItem (record) {
+  function getItem (err, record) {
+    expect(err).toBe(null);
     expect(record.done).toBe(false)
     expect(record.comments.length).toBe(1)
   }
@@ -86,26 +95,39 @@ test('updateItem', function () {
 
 test('setupNewSession', function () {
   var db = new Datastore({
+    //filename: `${__dirname}/mydb.db`,
     autoload: true
   })
   const newSessionId = 'aAeqwda'
-
-  function saveItem1 (record) {
-    item.addItem(db, sessionId, 'discuss about open source software', 'Fabio', 5, saveItem2)
+  var itemIdToBeChanged = "";
+  function saveItem1 (err, records) {
+    expect(err).toBe(null);
+    item.addItem(db, sessionId, 'discuss about serverless', 'Fabio', 5, saveItem2)
   }
-  function saveItem2 (record) {
-    item.changeStatus(db, record._id, true, statusChanged)
+  function saveItem2 (err, records) {
+    itemIdToBeChanged = records._id;
+    item.findAll(db,sessionId, checkSavedItem);
   }
-  function statusChanged (record) {
-    item.setupNewSession(db, sessionId, newSessionId, newSessionChanged)
+  function checkSavedItem(err, records) {
+    expect(err).toBe(null);
+    expect(records.length).toBe(2);
+    item.changeStatus(db, itemIdToBeChanged, true, statusChanged)
   }
-  function newSessionChanged (record) {
+  function statusChanged (err, affectedRows) {
+    expect(err).toBe(null);
+    expect(affectedRows).toBe(1);
+    item.setupNewSession(db, sessionId, newSessionId, newSessionCreated)
+  }
+  function newSessionCreated(err, affectedRows) {
+    expect(err).toBe(null);
+    expect(affectedRows).toBe(1);
     item.findAll(db, newSessionId, validateItems)
   }
-  function validateItems (records) {
+  function validateItems(err, records) {
+    expect(err).toBe(null);
     expect(records.length).toBe(1)
-    expect(records[0].sessions.length).toBe(1)
-    expect(records[0].sessions[0].name).toBe('discuss about open source software')
+    expect(records[0].sessions.length).toBe(2)
+    expect(records[0].sessions[1]).toBe(newSessionId);
   }
 
   item.addItem(db, sessionId, 'discuss about open source software', 'Bruno', 5, saveItem1)

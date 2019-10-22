@@ -8,21 +8,22 @@ function addItem (db, sessionId, name, owner, time, callback) {
       sessions: [sessionId],
       comments: []
     }, (err, record) => {
-      if (err) callback(err)
+      if (err) callback(err, null)
 
-      callback(record)
+      callback(null, record)
     })
 }
 function findById (db, itemId, callback) {
   db.findOne({ _id: itemId }, (err, recordSet) => {
-    if (err) callback(err)
+    if (err) callback(err, null)
 
-    callback(recordSet)
+    callback(null, recordSet)
   })
 }
+
 function addToSession (db, itemId, sessionId, callback) {
   db.findOne({ _id: itemId }, (err, recordSet) => {
-    if (err) callback(err)
+    if (err) callback(err, null)
 
     if (recordSet === null || recordSet === undefined) {
       throw new Error('item.record.notexists')
@@ -31,36 +32,44 @@ function addToSession (db, itemId, sessionId, callback) {
     recordSet.sessions.push(sessionId)
 
     db.update({ _id: itemId }, recordSet, (err, result) => {
-      if (err) callback(err)
+      if (err) callback(err, null)
 
-      callback(result)
+      callback(null, result)
     })
   })
 }
 
 function findAll (db, sessionId, callback) {
-  db.find({ sessions: [sessionId] }, (err, recordSet) => {
-    if (err) callback(err)
+  db.find({ sessions: { $in: [sessionId] }}, (err, recordSet) => {
+    if (err) callback(err, null)
 
-    callback(recordSet)
+    callback(null, recordSet)
   })
 }
 function addComment (db, itemId, comment, callback) {
-  findById(db, itemId, (record) => {
-    record.comments.push(comment)
-    db.update({ _id: itemId }, record, {}, (err, recordSet) => {
-      if (err) callback(err)
-      callback(recordSet)
+  findById(db, itemId, (err,record) => {
+    if (err) callback(err, null)
+    if (record === null || record === undefined) {
+      throw Error("register.not.found");
+    }
+    db.update({ _id: itemId }, { $push: {comments: comment}}, { upsert: false }, (err, recordSet) => {
+      if (err) callback(err, null)
+      callback(null, recordSet)
     })
   })
 }
 function changeStatus (db, itemId, status, callback) {
-  findById(db, itemId, (record) => {
-    record.done = status
-    db.update({ _id: itemId }, record, {}, (err, recordSet) => {
-      if (err) callback(err)
-      callback(recordSet)
-    })
+  findById(db, itemId, (err,recordSet) => {
+    if (err) callback(err, null)
+    if (recordSet === null || recordSet === undefined) throw Error("register.not.found");
+    
+    recordSet.done = status;
+    
+    db.update({ _id: itemId }, recordSet, {}, (err, affectRows) => {
+       if (err) callback(err, null)
+       callback(null, affectRows)
+     })
+    
   })
 }
 function setupNewSession (db, sessionId, newSessionId, callback) {
@@ -68,9 +77,9 @@ function setupNewSession (db, sessionId, newSessionId, callback) {
     { sessions: [sessionId], done: false },
     { $push: { sessions: newSessionId } },
     {}, (err, recordSet) => {
-      if (err) callback(err)
+      if (err) callback(err, null)
 
-      callback(recordSet)
+      callback(null, recordSet)
     })
 }
 module.exports = {
