@@ -12,17 +12,17 @@ Access meetnizer.github.io for other informations
 -->
 
 ## Data Structure
+
 A meeting could have sessions:
-```
-Meeting[1] > Session[0..*]
-```
+
+`Meeting[1] > Session[0..*]`
 
 On Item must has at least a session related:
-```
-Itens[0..*] > Session[1..*]
-```
+
+`Itens[0..*] > Session[1..*]`
 
 ## License
+
 [MIT](LICENSE)
 
 [build-image]: https://travis-ci.org/meetnizer/meetnizer.svg?branch=master
