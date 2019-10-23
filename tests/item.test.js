@@ -34,15 +34,9 @@ test('addItemToSession', function () {
   }
   function itemSaved (err, record) {
     expect(err).toBe(null)
-    var result = item.findById(db, itemId);
+    var result = item.findById(db, itemId)
     expect(result.done).toBe(false)
     expect(result.comments.length).toBe(1)
-  }
-  function getItem (err, record) {
-    expect(err).toBe(null)
-    expect(record.sessions.length).toBe(2)
-    expect(record.sessions[0]).toBe(sessionId)
-    expect(record.sessions[1]).toBe('df45va325')
   }
 
   item.addItem(db, sessionId, 'discuss about open source software', 'Bruno', 5, getItemId)
@@ -83,7 +77,7 @@ test('updateItem', function () {
     expect(err).toBe(null)
     expect(record).toBe(1)
 
-    var result = item.findById(db, itemId);
+    var result = item.findById(db, itemId)
     expect(result.done).toBe(false)
     expect(result.comments.length).toBe(1)
   }
