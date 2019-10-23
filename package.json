@@ -25,5 +25,17 @@
   "dependencies": {
     "moment": "^2.24.0",
     "nedb": "^1.8.0"
+  },
+  "standard": {
+    "globals": [
+      "beforeAll",
+      "afterAll",
+      "beforeEach",
+      "afterEach",
+      "describe",
+      "it",
+      "test",
+      "expect"
+    ]
   }
 }
