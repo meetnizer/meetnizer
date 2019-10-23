@@ -1,90 +1,60 @@
 const meeting = require('../services/meeting')
 var Datastore = require('nedb')
 
-test('findById', function () {
+test('findById', async function () {
   var db = new Datastore({
     autoload: true
   })
 
-  function check (err, ret) {
-    expect(err).toBe(null)
-    expect(ret).toBe(null)
-  }
-  meeting.findById(db, 'aaase', check)
+  const myMeeting = await meeting.findById(db, 'aaase');
+  expect(myMeeting).toBe(null);
 })
 
-test('newMetting', function () {
+
+test('newMetting', async function () {
   var db = new Datastore({
     autoload: true
   })
 
-  function validateResultId (err, ret) {
-    expect(err).toBe(null)
-    expect(ret._id.length).toBeGreaterThan(1)
-
-    meeting.findById(db, ret._id, validateResultName)
+  const myMeeting = await meeting.newMeeting(db, 'Team Meeting');
+  expect(myMeeting._id.length).toBeGreaterThan(1);
+  const myMeetingFind = await meeting.findById(db, myMeeting._id);
+  expect(myMeetingFind.name).toBe('Team Meeting')
+  try {
+    await meeting.newMeeting(db, 'Team Meeting');
+  } catch (err) {
+    expect(err).toBe("meeting.record.exists");
   }
-  function validateResultName (err, ret) {
-    expect(err).toBe(null)
-    expect(ret.name).toBe('Team Meeting')
-  }
-  meeting.newMeeting(db, 'Team Meeting', validateResultId)
+})
+test('changeMetting', async function () {
+  var db = new Datastore({
+    autoload: true
+  })
+  
+  const myMeeting = await meeting.newMeeting(db, 'Team Meeting');
+  myMeeting.name = 'test';
+  const saveResult = await meeting.saveMeeting(db, myMeeting)
+  expect(saveResult).toBe(1)
+  const findResult = await meeting.findById(db, myMeeting._id)
+  expect(findResult.name).toBe('test')
+  
 })
 
-test('changeMetting', function () {
+
+test('getAllMettings', async function () {
   var db = new Datastore({
     autoload: true
   })
-  var id = ''
-  function validateResultId (err, ret) {
-    expect(err).toBe(null)
-    expect(ret._id.length).toBeGreaterThan(1)
-    id = ret._id
-    ret.name = 'test'
-
-    meeting.saveMeeting(db, ret, validateUpdatedRecord)
-  }
-  function validateUpdatedRecord (err, ret) {
-    expect(err).toBe(null)
-    expect(ret).toBe(1)
-
-    meeting.findById(db, id, checkResult)
-  }
-
-  function checkResult (err, ret) {
-    expect(err).toBe(null)
-    expect(ret.name).toBe('test')
-  }
-
-  meeting.newMeeting(db, 'Team Meeting', validateResultId)
+  await meeting.newMeeting(db, 'Team Meeting');
+  await meeting.newMeeting(db, 'Project Meeting');
+  const result = await meeting.getAllMeetings(db);
+  expect(result.length).toBe(2);
 })
 
-test('getAllMettings', function () {
+test('getAllMettingsNoresult', async function () {
   var db = new Datastore({
     autoload: true
   })
-  function saveMeeting1 (err, record) {
-    expect(err).toBe(null)
-    meeting.newMeeting(db, 'Project Meeting', saveMeeting2)
-  }
-  function saveMeeting2 (err, record) {
-    expect(err).toBe(null)
-    meeting.getAllMeetings(db, checkResult)
-  }
-  function checkResult (err, record) {
-    expect(err).toBe(null)
-    expect(record.length).toBe(2)
-  }
-  meeting.newMeeting(db, 'Team Meeting', saveMeeting1)
-})
-
-test('getAllMettingsNoresult', function () {
-  var db = new Datastore({
-    autoload: true
-  })
-  function checkResult (err, record) {
-    expect(err).toBe(null)
-    expect(record.length).toBe(0)
-  }
-  meeting.getAllMeetings(db, checkResult)
+  const result = await meeting.getAllMeetings(db)
+  expect(result.length).toBe(0);
 })

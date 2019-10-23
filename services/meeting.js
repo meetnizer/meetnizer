@@ -1,43 +1,51 @@
-function newMeeting (db, name, callback) {
-  db.find({ name: name }, (err, recordSet) => {
-    if (err) return callback(err, null)
-
-    if (recordSet.length) {
-      throw new Error('meeting.record.exists')
-    }
-
-    var data = {
-      name: name,
-      sessions: []
-    }
-
-    db.insert(data, (err, recordSet) => {
-      if (err) return callback(err, null)
-
-      callback(null, recordSet)
+function newMeeting (db, name) {
+  return new Promise((resolve, reject)=>{
+    db.find({ name: name }, (err, recordSet) => {
+      if (err) reject(err)
+  
+      if (recordSet.length) {
+        reject('meeting.record.exists')
+      }
+  
+      var data = {
+        name: name,
+        sessions: []
+      }
+  
+      db.insert(data, (err, recordSet) => {
+        if (err) reject(err)
+  
+        resolve(recordSet)
+      })
     })
-  })
+  });
 }
 
-function findById (db, id, callback) {
-  db.findOne({ _id: id }, (err, recordSet) => {
-    if (err) return callback(err, null)
+function findById (db, id) {
+  return new Promise( (resolve, reject) => {
 
-    callback(null, recordSet)
-  })
+    db.findOne({ _id: id }, (err, recordSet) => {
+      if (err) reject(err)
+      resolve(recordSet)
+    })
+  });
 }
 
-function saveMeeting (db, obj, callback) {
-  db.update({ _id: obj._id }, obj, {}, (err, recordSet) => {
-    if (err) callback(err, null)
-    callback(null, recordSet)
-  })
+function saveMeeting (db, obj) {
+  return new Promise((resolve, reject)=>{
+    db.update({ _id: obj._id }, obj, {}, (err, recordSet) => {
+      if (err) reject(err)
+      resolve(recordSet)
+    })
+  });
 }
 function getAllMeetings (db, callback) {
-  db.find({}, (err, recordSet) => {
-    if (err) callback(err, null)
-    callback(null, recordSet)
-  })
+  return new Promise( (resolve, reject) => {
+    db.find({}, (err, recordSet) => {
+      if (err) reject(err)
+      resolve(recordSet)
+    })
+  });
 }
 module.exports = {
   newMeeting,
