@@ -34,7 +34,9 @@ test('addItemToSession', function () {
   }
   function itemSaved (err, record) {
     expect(err).toBe(null)
-    item.findById(db, itemId, getItem)
+    var result = item.findById(db, itemId);
+    expect(result.done).toBe(false)
+    expect(result.comments.length).toBe(1)
   }
   function getItem (err, record) {
     expect(err).toBe(null)
@@ -81,13 +83,9 @@ test('updateItem', function () {
     expect(err).toBe(null)
     expect(record).toBe(1)
 
-    item.findById(db, itemId, getItem)
-  }
-
-  function getItem (err, record) {
-    expect(err).toBe(null)
-    expect(record.done).toBe(false)
-    expect(record.comments.length).toBe(1)
+    var result = item.findById(db, itemId);
+    expect(result.done).toBe(false)
+    expect(result.comments.length).toBe(1)
   }
 
   item.addItem(db, sessionId, 'discuss about open source software', 'Bruno', 5, saveItem1)

@@ -13,12 +13,13 @@ function addItem (db, sessionId, name, owner, time, callback) {
       callback(null, record)
     })
 }
-function findById (db, itemId, callback) {
-  db.findOne({ _id: itemId }, (err, recordSet) => {
-    if (err) callback(err, null)
-
-    callback(null, recordSet)
-  })
+function findById (db, itemId) {
+  return new Promise( (resolve, reject) =>{
+    db.findOne({ _id: itemId }, (err, recordSet) => {
+      if (err) reject(err)
+      resolve(recordSet)
+    })
+  });
 }
 
 function addToSession (db, itemId, sessionId, callback) {
