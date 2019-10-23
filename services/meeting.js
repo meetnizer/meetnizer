@@ -30,7 +30,7 @@ function findById (db, id, callback) {
 function saveMeeting (db, obj, callback) {
   db.update({ _id: obj._id }, obj, {}, (err, recordSet) => {
     if (err) callback(err, null)
-    callback(null,recordSet)
+    callback(null, recordSet)
   })
 }
 function getAllMeetings (db, callback) {

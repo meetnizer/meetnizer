@@ -6,8 +6,8 @@ test('findById', function () {
     autoload: true
   })
 
-  function check (err,ret) {
-    expect(err).toBe(null);
+  function check (err, ret) {
+    expect(err).toBe(null)
     expect(ret).toBe(null)
   }
   meeting.findById(db, 'aaase', check)
@@ -19,13 +19,13 @@ test('newMetting', function () {
   })
 
   function validateResultId (err, ret) {
-    expect(err).toBe(null);
+    expect(err).toBe(null)
     expect(ret._id.length).toBeGreaterThan(1)
 
     meeting.findById(db, ret._id, validateResultName)
   }
   function validateResultName (err, ret) {
-    expect(err).toBe(null);
+    expect(err).toBe(null)
     expect(ret.name).toBe('Team Meeting')
   }
   meeting.newMeeting(db, 'Team Meeting', validateResultId)
@@ -37,22 +37,22 @@ test('changeMetting', function () {
   })
   var id = ''
   function validateResultId (err, ret) {
-    expect(err).toBe(null);
+    expect(err).toBe(null)
     expect(ret._id.length).toBeGreaterThan(1)
     id = ret._id
     ret.name = 'test'
 
     meeting.saveMeeting(db, ret, validateUpdatedRecord)
   }
-  function validateUpdatedRecord (err,ret) {
-    expect(err).toBe(null);
+  function validateUpdatedRecord (err, ret) {
+    expect(err).toBe(null)
     expect(ret).toBe(1)
 
     meeting.findById(db, id, checkResult)
   }
 
   function checkResult (err, ret) {
-    expect(err).toBe(null);
+    expect(err).toBe(null)
     expect(ret.name).toBe('test')
   }
 
@@ -64,15 +64,15 @@ test('getAllMettings', function () {
     autoload: true
   })
   function saveMeeting1 (err, record) {
-    expect(err).toBe(null);
+    expect(err).toBe(null)
     meeting.newMeeting(db, 'Project Meeting', saveMeeting2)
   }
   function saveMeeting2 (err, record) {
-    expect(err).toBe(null);
+    expect(err).toBe(null)
     meeting.getAllMeetings(db, checkResult)
   }
   function checkResult (err, record) {
-    expect(err).toBe(null);
+    expect(err).toBe(null)
     expect(record.length).toBe(2)
   }
   meeting.newMeeting(db, 'Team Meeting', saveMeeting1)
@@ -83,7 +83,7 @@ test('getAllMettingsNoresult', function () {
     autoload: true
   })
   function checkResult (err, record) {
-    expect(err).toBe(null);
+    expect(err).toBe(null)
     expect(record.length).toBe(0)
   }
   meeting.getAllMeetings(db, checkResult)

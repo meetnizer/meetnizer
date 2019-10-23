@@ -40,36 +40,35 @@ function addToSession (db, itemId, sessionId, callback) {
 }
 
 function findAll (db, sessionId, callback) {
-  db.find({ sessions: { $in: [sessionId] }}, (err, recordSet) => {
+  db.find({ sessions: { $in: [sessionId] } }, (err, recordSet) => {
     if (err) callback(err, null)
 
     callback(null, recordSet)
   })
 }
 function addComment (db, itemId, comment, callback) {
-  findById(db, itemId, (err,record) => {
+  findById(db, itemId, (err, record) => {
     if (err) callback(err, null)
     if (record === null || record === undefined) {
-      throw Error("register.not.found");
+      throw Error('register.not.found')
     }
-    db.update({ _id: itemId }, { $push: {comments: comment}}, { upsert: false }, (err, recordSet) => {
+    db.update({ _id: itemId }, { $push: { comments: comment } }, { upsert: false }, (err, recordSet) => {
       if (err) callback(err, null)
       callback(null, recordSet)
     })
   })
 }
 function changeStatus (db, itemId, status, callback) {
-  findById(db, itemId, (err,recordSet) => {
+  findById(db, itemId, (err, recordSet) => {
     if (err) callback(err, null)
-    if (recordSet === null || recordSet === undefined) throw Error("register.not.found");
-    
-    recordSet.done = status;
-    
+    if (recordSet === null || recordSet === undefined) throw Error('register.not.found')
+
+    recordSet.done = status
+
     db.update({ _id: itemId }, recordSet, {}, (err, affectRows) => {
-       if (err) callback(err, null)
-       callback(null, affectRows)
-     })
-    
+      if (err) callback(err, null)
+      callback(null, affectRows)
+    })
   })
 }
 function setupNewSession (db, sessionId, newSessionId, callback) {

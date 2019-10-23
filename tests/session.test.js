@@ -9,7 +9,7 @@ test('getSessionById', function () {
   })
 
   function meetingSaved (err, record) {
-    expect(err).toBe(null);
+    expect(err).toBe(null)
     expect(record._id.length).toBeGreaterThan(1)
 
     const result = session.findById(record, 12)
@@ -26,7 +26,7 @@ test('createSession', function () {
   var id = ''
   const myDate = moment('21/10/2019', 'DD/MM/YYYY')
   function meetingSaved (err, record) {
-    expect(err).toBe(null);
+    expect(err).toBe(null)
     expect(record._id.length).toBeGreaterThan(1)
     id = record._id
 
@@ -41,12 +41,12 @@ test('createSession', function () {
     meeting.saveMeeting(db, obj, meetingChanged)
   }
   function meetingChanged (err, record) {
-    expect(err).toBe(null);
+    expect(err).toBe(null)
     expect(record).toBe(1)
     meeting.findById(db, id, checkResult)
   }
   function checkResult (err, record) {
-    expect(err).toBe(null);
+    expect(err).toBe(null)
     expect(record.sessions.length).toBe(1)
     expect(record.sessions[0].name).toBe('First monday of the month')
     expect(record.sessions[0].durationInHours).toBe(2)
@@ -62,7 +62,7 @@ test('getLastSessionNoData', function () {
   })
 
   function meetingSaved (err, record) {
-    expect(err).toBe(null);
+    expect(err).toBe(null)
     expect(record._id.length).toBeGreaterThan(1)
     const lastSession = session.getLastSession(record)
     expect(lastSession).toBe(null)
@@ -76,7 +76,7 @@ test('getLastSession', function () {
   })
 
   function meetingSaved (err, record) {
-    expect(err).toBe(null);
+    expect(err).toBe(null)
     expect(record._id.length).toBeGreaterThan(1)
 
     session.addSession(db, record, 'test1', moment('21/10/2019', 'DD/MM/YYYY'), 2)
