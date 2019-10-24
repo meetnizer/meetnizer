@@ -3,12 +3,12 @@
 Access meetnizer.github.io for other informations
 
 [![Build status][build-image]][build-image]
+[![Test Coverage][coveralls-image]][coveralls-url]
 <!--
 [![NPM Version][npm-image]][npm-url]
 [![NPM Downloads][downloads-image]][downloads-url]
 [![Linux Build][travis-image]][travis-url]
 [![Windows Build][appveyor-image]][appveyor-url]
-[![Test Coverage][coveralls-image]][coveralls-url]
 -->
 
 ## Data Structure
@@ -26,3 +26,5 @@ A Item must have at least one session:
 [MIT](LICENSE)
 
 [build-image]: https://travis-ci.org/meetnizer/meetnizer.svg?branch=master
+[coveralls-image]: https://coveralls.io/repos/github/meetnizer/meetnizer/badge.svg?branch=master
+[coveralls-url]: https://coveralls.io/github/meetnizer/meetnizer?branch=master
