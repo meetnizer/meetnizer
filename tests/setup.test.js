@@ -9,7 +9,7 @@ function removeFile () {
 }
 
 test('getConfigFileName', function () {
-  expect(setupSrv.getConfigFileName(appLocalPath)).toBe(path.join(__dirname, '/settings.json'))
+  expect(setupSrv.getConfigFileName(appLocalPath)).toBe(path.join(__dirname, 'settings.json'))
 })
 
 test('isConfigured()', function () {

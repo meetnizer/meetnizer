@@ -1,4 +1,5 @@
 const fs = require('fs')
+const path = require('path')
 // var homedir = require('os').homedir()
 // var configDir = path.join(homedir, 'timet.json')
 function isConfigured (appPath) {
@@ -10,7 +11,7 @@ function getConfiguration (appPath) {
 }
 
 function getConfigFileName (appPath) {
-  return `${appPath}/settings.json`
+  return path.join(appPath, 'settings.json')
 }
 
 function createConfigFile (appPath, dbFile) {
