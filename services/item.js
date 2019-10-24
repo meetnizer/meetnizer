@@ -9,9 +9,9 @@ function addItem (db, sessionId, name, owner, time, recurrent) {
         recurrent,
         sessions: [sessionId],
         comments: []
-      }, (err, record) => {
+      }, (err, recordSet) => {
         if (err) reject(err)
-        resolve(record)
+        resolve(recordSet)
       })
   })
 }
@@ -40,12 +40,12 @@ function addToSession (db, itemId, sessionId) {
       { _id: itemId },
       { $push: { sessions: sessionId } },
       { upsert: false },
-      (err, affectRows) => {
+      (err, affectedRows) => {
         if (err) reject(err)
-        if (affectRows === 0) {
+        if (affectedRows === 0) {
           reject(new Error('register.not.found'))
         } else {
-          resolve(affectRows)
+          resolve(true)
         }
       })
   })
@@ -53,19 +53,14 @@ function addToSession (db, itemId, sessionId) {
 
 function addComment (db, itemId, comment) {
   return new Promise((resolve, reject) => {
-    db.findOne({ _id: itemId }, (err, recordSet) => {
-      if (err) reject(err)
-      if (!recordSet) reject(new Error('register.not.found'))
-
-      db.update(
-        { _id: itemId },
-        { $push: { comments: comment } },
-        { upsert: false },
-        (err1, recordSet1) => {
-          if (err1) reject(err1)
-          resolve(recordSet1)
-        })
-    })
+    db.update(
+      { _id: itemId },
+      { $push: { comments: comment } },
+      { upsert: false },
+      (err, affectedRows) => {
+        if (err) reject(err)
+        if (affectedRows === 0) { reject(new Error('register.not.found')) } else { resolve(true) }
+      })
   })
 }
 function changeStatus (db, itemId, status) {
@@ -74,12 +69,12 @@ function changeStatus (db, itemId, status) {
       { _id: itemId },
       { status },
       { upsert: false },
-      (err, affectRows) => {
+      (err, affectedRows) => {
         if (err) reject(err)
-        if (affectRows === 0) {
+        if (affectedRows === 0) {
           reject(new Error('register.not.found'))
         } else {
-          resolve(affectRows)
+          resolve(true)
         }
       })
   })
@@ -90,9 +85,13 @@ function setupNewSession (db, sessionId, newSessionId) {
     db.update(
       { sessions: [sessionId], $or: [{ done: false }, { recurrent: true }] },
       { $push: { sessions: newSessionId } },
-      {}, (err, recordSet) => {
+      {}, (err, affectedRows) => {
         if (err) reject(err)
-        resolve(recordSet)
+        if (affectedRows === 0) {
+          reject(new Error('setup.new.session.failed'))
+        } else {
+          resolve(true)
+        }
       })
   })
 }
