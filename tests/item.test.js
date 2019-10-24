@@ -2,126 +2,81 @@ const item = require('../services/item')
 var Datastore = require('nedb')
 const sessionId = 'Awdxr'
 
-test('saveItem', function () {
+test('saveItem', async function () {
   var db = new Datastore({
     autoload: true
   })
 
-  function getItemId (err, record) {
-    expect(err).toBe(null)
-    expect(record._id.length).toBeGreaterThan(1)
-    expect(record.name).toBe('discuss about open source software')
-    expect(record.owner).toBe('Bruno')
-    expect(record.time).toBe(5)
-    expect(record.sessions.length).toBe(1)
-    expect(record.sessions[0]).toBe(sessionId)
-    expect(record.done).toBe(false)
-  }
+  const result = await item.addItem(db, sessionId, 'discuss about open source software', 'Bruno', 5, false)
 
-  item.addItem(db, sessionId, 'discuss about open source software', 'Bruno', 5, getItemId)
+  const record = await item.findById(db, result._id)
+
+  expect(record._id.length).toBeGreaterThan(1)
+  expect(record.name).toBe('discuss about open source software')
+  expect(record.owner).toBe('Bruno')
+  expect(record.time).toBe(5)
+  expect(record.sessions.length).toBe(1)
+  expect(record.sessions[0]).toBe(sessionId)
+  expect(record.done).toBe(false)
 })
-
-test('addItemToSession', function () {
+test('addItemToSession', async function () {
   var db = new Datastore({
     autoload: true
   })
-  var itemId = ''
-  function getItemId (err, record) {
-    expect(err).toBe(null)
-    expect(record._id.length).toBeGreaterThan(1)
-    itemId = record._id
-    item.addToSession(db, record._id, 'df45va325', itemSaved)
-  }
-  function itemSaved (err, record) {
-    expect(err).toBe(null)
-    var result = item.findById(db, itemId)
-    expect(result.done).toBe(false)
-    expect(result.comments.length).toBe(1)
-  }
 
-  item.addItem(db, sessionId, 'discuss about open source software', 'Bruno', 5, getItemId)
+  const result = await item.addItem(db, sessionId, 'discuss about open source software', 'Bruno', 5, false)
+  await item.addToSession(db, result._id, 'df45va325')
+  const resultUpdated = await item.findById(db, result._id)
+  expect(resultUpdated.sessions.length).toBe(2)
 })
 
-test('getAllItemsForSession', function () {
+test('getAllItemsForSession', async function () {
   var db = new Datastore({
     autoload: true
   })
-  function saveItem1 (err, record) {
-    expect(err).toBe(null)
-    item.addItem(db, sessionId, 'discuss about open source software', 'Fabio', 5, saveItem2)
-  }
-  function saveItem2 (err, record) {
-    expect(err).toBe(null)
-    item.findAll(db, sessionId, validateItems)
-  }
-  function validateItems (err, items) {
-    expect(err).toBe(null)
-    expect(items.length).toBe(2)
-  }
-  item.addItem(db, sessionId, 'discuss about open source software', 'Bruno', 5, saveItem1)
+
+  await item.addItem(db, sessionId, 'discuss about open source software', 'Bruno', 5, false)
+  await item.addItem(db, sessionId, 'discuss about open source software', 'Fabio', 5, false)
+  const list = await item.findAll(db, sessionId)
+  expect(list.length).toBe(2)
 })
 
-test('updateItem', function () {
+test('updateItem', async function () {
   var db = new Datastore({
     autoload: true
   })
-  var itemId = ''
-  function saveItem1 (err, record) {
-    expect(err).toBe(null)
-    itemId = record._id
 
-    item.addComment(db, itemId, 'For the next meeting talk about the nginx server', itemUpdated)
-  }
-
-  function itemUpdated (err, record) {
-    expect(err).toBe(null)
-    expect(record).toBe(1)
-
-    var result = item.findById(db, itemId)
-    expect(result.done).toBe(false)
-    expect(result.comments.length).toBe(1)
-  }
-
-  item.addItem(db, sessionId, 'discuss about open source software', 'Bruno', 5, saveItem1)
+  const resultSaved = await item.addItem(db, sessionId, 'discuss about open source software', 'Bruno', 5, false)
+  await item.addComment(db, resultSaved._id, 'For the next meeting talk about the nginx server', false)
+  const result = await item.findById(db, resultSaved._id)
+  expect(result.done).toBe(false)
+  expect(result.comments.length).toBe(1)
 })
 
-test('setupNewSession', function () {
+test('setupNewSession', async function () {
   var db = new Datastore({
-    // filename: `${__dirname}/mydb.db`,
     autoload: true
   })
   const newSessionId = 'aAeqwda'
-  var itemIdToBeChanged = ''
-  function saveItem1 (err, records) {
-    expect(err).toBe(null)
-    item.addItem(db, sessionId, 'discuss about serverless', 'Fabio', 5, saveItem2)
-  }
-  function saveItem2 (err, records) {
-    expect(err).toBe(null)
-    itemIdToBeChanged = records._id
-    item.findAll(db, sessionId, checkSavedItem)
-  }
-  function checkSavedItem (err, records) {
-    expect(err).toBe(null)
-    expect(records.length).toBe(2)
-    item.changeStatus(db, itemIdToBeChanged, true, statusChanged)
-  }
-  function statusChanged (err, affectedRows) {
-    expect(err).toBe(null)
-    expect(affectedRows).toBe(1)
-    item.setupNewSession(db, sessionId, newSessionId, newSessionCreated)
-  }
-  function newSessionCreated (err, affectedRows) {
-    expect(err).toBe(null)
-    expect(affectedRows).toBe(1)
-    item.findAll(db, newSessionId, validateItems)
-  }
-  function validateItems (err, records) {
-    expect(err).toBe(null)
-    expect(records.length).toBe(1)
-    expect(records[0].sessions.length).toBe(2)
-    expect(records[0].sessions[1]).toBe(newSessionId)
-  }
 
-  item.addItem(db, sessionId, 'discuss about open source software', 'Bruno', 5, saveItem1)
+  await item.addItem(db, sessionId, 'discuss about open source software', 'Bruno', 5, false)
+  const record = await item.addItem(db, sessionId, 'discuss about serverless', 'Fabio', 5, false)
+  const listResult = await item.findAll(db, sessionId)
+  expect(listResult.length).toBe(2)
+  await item.changeStatus(db, record._id, true)
+  await item.setupNewSession(db, sessionId, newSessionId)
+  const listNewSession = await item.findAll(db, newSessionId)
+  expect(listNewSession.length).toBe(1)
+  expect(listNewSession[0].sessions.length).toBe(2)
+  expect(listNewSession[0].sessions[0]).toBe(sessionId)
+  expect(listNewSession[0].sessions[1]).toBe(newSessionId)
 })
+/*
+
+test('changeItemStatus', async function() {
+  await item.changeStatus(db, result._id, true);
+  const result1 = await item.findById(db, result._id);
+  expect(result1.done).toBe(true)
+  expect(result1.comments.length).toBe(1)
+})
+*/

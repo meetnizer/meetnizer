@@ -31,10 +31,10 @@ test('createSession', async function () {
 
   await meeting.saveMeeting(db, obj)
 
-  expect(obj._id).toBe(myMeeting._id);
+  expect(obj._id).toBe(myMeeting._id)
 
   const result = await meeting.findById(db, myMeeting._id)
-  
+
   expect(result.sessions.length).toBe(1)
   expect(result.sessions[0].name).toBe('First monday of the month')
   expect(result.sessions[0].durationInHours).toBe(2)
