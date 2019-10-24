@@ -23,7 +23,7 @@ function getLastSession (meeting) {
     return null
   }
   var sessions = meeting.sessions
-  sessions.sort(function (a, b) {
+  sessions.sort((a, b) => {
     a = new Date(a.date)
     b = new Date(b.date)
     return a > b ? -1 : a < b ? 1 : 0

@@ -32,9 +32,9 @@ function findById (db, id) {
 
 function saveMeeting (db, obj) {
   return new Promise((resolve, reject) => {
-    db.update({ _id: obj._id }, obj, {}, (err, recordSet) => {
+    db.update({ _id: obj._id }, obj, {}, (err, affectedRows) => {
       if (err) reject(err)
-      resolve(recordSet)
+      if (affectedRows === 0) { reject(new Error('register.not.found')) } else { resolve(true) }
     })
   })
 }

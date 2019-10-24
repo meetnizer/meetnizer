@@ -33,7 +33,7 @@ test('changeMetting', async function () {
   const myMeeting = await meetingSrv.newMeeting(db, 'Team Meeting')
   myMeeting.name = 'test'
   const saveResult = await meetingSrv.saveMeeting(db, myMeeting)
-  expect(saveResult).toBe(1)
+  expect(saveResult).toBe(true)
   const findResult = await meetingSrv.findById(db, myMeeting._id)
   expect(findResult.name).toBe('test')
 })
