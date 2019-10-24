@@ -36,18 +36,18 @@ function findAll (db, sessionId) {
 
 function addToSession (db, itemId, sessionId) {
   return new Promise((resolve, reject) => {
-    db.findOne({ _id: itemId }, (err, recordSet) => {
-      if (err) reject(err)
-      console.log(itemId, recordSet);
-      if (!recordSet) reject(new Error('register.not.found'))
-
-      recordSet.sessions.push(sessionId)
-
-      db.update({ _id: itemId }, recordSet, (err, result) => {
+    db.update(
+      { _id: itemId },
+      { $push: { sessions: sessionId } },
+      { upsert: false },
+      (err, affectRows) => {
         if (err) reject(err)
-        resolve(result)
+        if (affectRows === 0) {
+          reject(new Error('register.not.found'))
+        } else {
+          resolve(affectRows)
+        }
       })
-    })
   })
 }
 
@@ -70,16 +70,18 @@ function addComment (db, itemId, comment) {
 }
 function changeStatus (db, itemId, status) {
   return new Promise((resolve, reject) => {
-    db.findOne({ _id: itemId }, (err, recordSet) => {
-      if (err) reject(err)
-      if (!recordSet) reject(new Error('register.not.found'))
-
-      recordSet.status = status
-      db.update({ _id: itemId }, recordSet, {}, (err1, affectRows) => {
-        if (err1) reject(err1)
-        resolve(affectRows)
+    db.update(
+      { _id: itemId },
+      { status },
+      { upsert: false },
+      (err, affectRows) => {
+        if (err) reject(err)
+        if (affectRows === 0) {
+          reject(new Error('register.not.found'))
+        } else {
+          resolve(affectRows)
+        }
       })
-    })
   })
 }
 

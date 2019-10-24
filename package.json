@@ -6,7 +6,7 @@
   "scripts": {
     "start": "electron .",
     "lint": "standard --fix",
-    "test": "jest --coverage"
+    "test": "npm run lint && jest --coverage"
   },
   "repository": "https://github.com/meetnizer/meetnizer",
   "keywords": [
