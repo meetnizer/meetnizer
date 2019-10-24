@@ -34,10 +34,11 @@ function saveMeeting (db, obj) {
   return new Promise((resolve, reject) => {
     db.update({ _id: obj._id }, obj, {}, (err, affectedRows) => {
       if (err) reject(err)
-      if (affectedRows === 0) { reject(new Error('register.not.found')) } else { resolve(true) }
+      if (affectedRows === 0) { reject(new Error('meeting.not.found')) } else { resolve(true) }
     })
   })
 }
+
 function getAllMeetings (db, callback) {
   return new Promise((resolve, reject) => {
     db.find({}, (err, recordSet) => {

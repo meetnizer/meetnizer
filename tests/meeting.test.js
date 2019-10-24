@@ -55,3 +55,14 @@ test('getAllMettingsNoresult', async function () {
   const result = await meetingSrv.getAllMeetings(db)
   expect(result.length).toBe(0)
 })
+
+test('changeMettingNotExists', async function () {
+  var db = new Datastore({
+    autoload: true
+  })
+  try {
+    await meetingSrv.saveMeeting(db, { _id: 'aaaa' })
+  } catch (err) {
+    expect(err.message).toBe('meeting.not.found')
+  }
+})
