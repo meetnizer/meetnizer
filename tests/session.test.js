@@ -41,7 +41,6 @@ test('createSession', async function () {
   expect(result.sessions[0].finish).toBe(false)
 
   const sessionResult = sessionSrv.findById(myMeeting, 'First monday of the month')
-  console.log(sessionResult)
   expect(sessionResult).not.toBe(null)
 })
 

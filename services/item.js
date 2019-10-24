@@ -25,12 +25,21 @@ function findById (db, itemId) {
   })
 }
 
+function findAll (db, sessionId) {
+  return new Promise((resolve, reject) => {
+    db.find({ sessions: { $in: [sessionId] } }, (err, recordSet) => {
+      if (err) reject(err)
+      resolve(recordSet)
+    })
+  })
+}
+
 function addToSession (db, itemId, sessionId) {
   return new Promise((resolve, reject) => {
     db.findOne({ _id: itemId }, (err, recordSet) => {
       if (err) reject(err)
-
-      if (!recordSet) reject(new Error('item.record.not.`exists'))
+      console.log(itemId, recordSet);
+      if (!recordSet) reject(new Error('register.not.found'))
 
       recordSet.sessions.push(sessionId)
 
@@ -42,43 +51,32 @@ function addToSession (db, itemId, sessionId) {
   })
 }
 
-function findAll (db, sessionId) {
-  return new Promise((resolve, reject) => {
-    db.find({ sessions: { $in: [sessionId] } }, (err, recordSet) => {
-      if (err) reject(err)
-      resolve(recordSet)
-    })
-  })
-}
-
 function addComment (db, itemId, comment) {
   return new Promise((resolve, reject) => {
-    const record = findById(db, itemId)
-    if (!record) throw Error('register.not.found')
-    resolve(record)
-  }).then(function (result) {
-    return new Promise((resolve, reject) => {
+    db.findOne({ _id: itemId }, (err, recordSet) => {
+      if (err) reject(err)
+      if (!recordSet) reject(new Error('register.not.found'))
+
       db.update(
         { _id: itemId },
         { $push: { comments: comment } },
         { upsert: false },
-        (err, recordSet) => {
-          if (err) reject(err)
-          resolve(recordSet)
+        (err1, recordSet1) => {
+          if (err1) reject(err1)
+          resolve(recordSet1)
         })
     })
   })
 }
 function changeStatus (db, itemId, status) {
   return new Promise((resolve, reject) => {
-    const record = findById(db, itemId)
-    if (!record) throw Error('register.not.found')
-    resolve(record)
-  }).then(function (result) {
-    return new Promise((resolve, reject) => {
-      result.status = status
-      db.update({ _id: itemId }, result, {}, (err, affectRows) => {
-        if (err) reject(err)
+    db.findOne({ _id: itemId }, (err, recordSet) => {
+      if (err) reject(err)
+      if (!recordSet) reject(new Error('register.not.found'))
+
+      recordSet.status = status
+      db.update({ _id: itemId }, recordSet, {}, (err1, affectRows) => {
+        if (err1) reject(err1)
         resolve(affectRows)
       })
     })

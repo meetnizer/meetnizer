@@ -19,6 +19,7 @@ test('saveItem', async function () {
   expect(record.sessions[0]).toBe(sessionId)
   expect(record.done).toBe(false)
 })
+
 test('addItemToSession', async function () {
   var db = new Datastore({
     autoload: true
@@ -71,12 +72,36 @@ test('setupNewSession', async function () {
   expect(listNewSession[0].sessions[0]).toBe(sessionId)
   expect(listNewSession[0].sessions[1]).toBe(newSessionId)
 })
-/*
 
-test('changeItemStatus', async function() {
-  await item.changeStatus(db, result._id, true);
-  const result1 = await item.findById(db, result._id);
-  expect(result1.done).toBe(true)
-  expect(result1.comments.length).toBe(1)
+test('addToSessionNotExists', async function () {
+  var db = new Datastore({
+    autoload: true
+  })
+  try {
+    await itemSrv.addToSession(db, 'aaa', 'bbb')
+  } catch (err) {
+    expect(err.message).toBe('register.not.found')
+  }
 })
-*/
+
+test('addCommentNotExists', async function () {
+  var db = new Datastore({
+    autoload: true
+  })
+  try {
+    await itemSrv.addComment(db, 'aaa', 'my comment')
+  } catch (err) {
+    expect(err.message).toBe('register.not.found')
+  }
+})
+
+test('changeStatusNotExists', async function () {
+  var db = new Datastore({
+    autoload: true
+  })
+  try {
+    await itemSrv.changeStatus(db, 'dasdsa', false)
+  } catch (err) {
+    expect(err.message).toBe('register.not.found')
+  }
+})
