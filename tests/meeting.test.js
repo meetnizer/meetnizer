@@ -1,4 +1,4 @@
-const meeting = require('../services/meeting')
+const meetingSrv = require('../services/meeting')
 var Datastore = require('nedb')
 
 test('findById', async function () {
@@ -6,7 +6,7 @@ test('findById', async function () {
     autoload: true
   })
 
-  const myMeeting = await meeting.findById(db, 'aaase')
+  const myMeeting = await meetingSrv.findById(db, 'aaase')
   expect(myMeeting).toBe(null)
 })
 
@@ -15,12 +15,12 @@ test('newMetting', async function () {
     autoload: true
   })
 
-  const myMeeting = await meeting.newMeeting(db, 'Team Meeting')
+  const myMeeting = await meetingSrv.newMeeting(db, 'Team Meeting')
   expect(myMeeting._id.length).toBeGreaterThan(1)
-  const myMeetingFind = await meeting.findById(db, myMeeting._id)
+  const myMeetingFind = await meetingSrv.findById(db, myMeeting._id)
   expect(myMeetingFind.name).toBe('Team Meeting')
   try {
-    await meeting.newMeeting(db, 'Team Meeting')
+    await meetingSrv.newMeeting(db, 'Team Meeting')
   } catch (err) {
     expect(err.message).toBe('meeting.record.exists')
   }
@@ -30,11 +30,11 @@ test('changeMetting', async function () {
     autoload: true
   })
 
-  const myMeeting = await meeting.newMeeting(db, 'Team Meeting')
+  const myMeeting = await meetingSrv.newMeeting(db, 'Team Meeting')
   myMeeting.name = 'test'
-  const saveResult = await meeting.saveMeeting(db, myMeeting)
+  const saveResult = await meetingSrv.saveMeeting(db, myMeeting)
   expect(saveResult).toBe(1)
-  const findResult = await meeting.findById(db, myMeeting._id)
+  const findResult = await meetingSrv.findById(db, myMeeting._id)
   expect(findResult.name).toBe('test')
 })
 
@@ -42,9 +42,9 @@ test('getAllMettings', async function () {
   var db = new Datastore({
     autoload: true
   })
-  await meeting.newMeeting(db, 'Team Meeting')
-  await meeting.newMeeting(db, 'Project Meeting')
-  const result = await meeting.getAllMeetings(db)
+  await meetingSrv.newMeeting(db, 'Team Meeting')
+  await meetingSrv.newMeeting(db, 'Project Meeting')
+  const result = await meetingSrv.getAllMeetings(db)
   expect(result.length).toBe(2)
 })
 
@@ -52,6 +52,6 @@ test('getAllMettingsNoresult', async function () {
   var db = new Datastore({
     autoload: true
   })
-  const result = await meeting.getAllMeetings(db)
+  const result = await meetingSrv.getAllMeetings(db)
   expect(result.length).toBe(0)
 })
