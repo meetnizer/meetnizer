@@ -1,10 +1,9 @@
 function findById (meeting, sessionId) {
-  meeting.sessions.map(item => {
-    if (item._id === sessionId) {
-      return item
+  for (var i = 0; i < meeting.sessions.length; i++) {
+    if (meeting.sessions[i].name === sessionId) {
+      return meeting.sessions[i]
     }
-  })
-
+  }
   return null
 }
 
