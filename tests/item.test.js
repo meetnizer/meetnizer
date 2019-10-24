@@ -105,3 +105,17 @@ test('changeStatusNotExists', async function () {
     expect(err.message).toBe('register.not.found')
   }
 })
+
+test('setupNewSession', async function () {
+  var db = new Datastore({
+    autoload: true
+  })
+  const fakeSession = 'aAeqwda'
+
+  try {
+    await itemSrv.addItem(db, sessionId, 'discuss about open source software', 'Bruno', 5, false)
+    await itemSrv.setupNewSession(db, fakeSession, 'newSession')
+  } catch (err) {
+    expect(err.message).toBe('setup.new.session.failed')
+  }
+})
