@@ -1,4 +1,4 @@
-function addItem (db, sessionId, name, owner, time, recurrent) {
+function addItem (db, meetingId, sessionId, name, owner, time, recurrent) {
   return new Promise((resolve, reject) => {
     db.insert(
       {
@@ -7,6 +7,7 @@ function addItem (db, sessionId, name, owner, time, recurrent) {
         time,
         done: false,
         recurrent,
+        meetingId,
         sessions: [sessionId],
         comments: []
       }, (err, recordSet) => {
@@ -25,19 +26,19 @@ function findById (db, itemId) {
   })
 }
 
-function findAll (db, sessionId) {
+function findAll (db, meetingId, sessionId) {
   return new Promise((resolve, reject) => {
-    db.find({ sessions: { $in: [sessionId] } }, (err, recordSet) => {
+    db.find({ meetingId: meetingId, sessions: { $in: [sessionId] } }, (err, recordSet) => {
       if (err) reject(err)
       resolve(recordSet)
     })
   })
 }
 
-function addToSession (db, itemId, sessionId) {
+function addToSession (db, itemId, meetingId, sessionId) {
   return new Promise((resolve, reject) => {
     db.update(
-      { _id: itemId },
+      { _id: itemId, meetingId: meetingId },
       { $push: { sessions: sessionId } },
       { upsert: false },
       (err, affectedRows) => {
@@ -80,10 +81,10 @@ function changeStatus (db, itemId, status) {
   })
 }
 
-function setupNewSession (db, sessionId, newSessionId) {
+function setupNewSession (db, meetingId, sessionId, newSessionId) {
   return new Promise((resolve, reject) => {
     db.update(
-      { sessions: [sessionId], $or: [{ done: false }, { recurrent: true }] },
+      { meetingId: meetingId, sessions: [sessionId], $or: [{ done: false }, { recurrent: true }] },
       { $push: { sessions: newSessionId } },
       {}, (err, affectedRows) => {
         if (err) reject(err)
