@@ -5,13 +5,10 @@ import './App.css'
 class App extends Component {
   constructor (props) {
     super(props)
-
-    this.state = {}
-
-    this.exampleInvoke = this.exampleInvoke.bind(this)
+    this.setState({ response: 'init' })
   }
 
-  exampleInvoke () {
+  handleExampleInvoke () {
     this.setState({ response: 'Just example change' })
   }
 
@@ -24,7 +21,7 @@ class App extends Component {
           <p>{this.state.response}</p>
         </div>
         <div>
-          <button className='marginTop big' onClick={this.exampleInvoke}>
+          <button className='marginTop big' onClick={this.handleExampleInvoke}>
             Começar
           </button>
         </div>
