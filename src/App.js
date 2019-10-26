@@ -5,11 +5,11 @@ import './App.css'
 class App extends Component {
   constructor (props) {
     super(props)
-    this.setState({ response: 'init' })
+    //this.setState({ response: 'init' })
   }
 
   handleExampleInvoke () {
-    this.setState({ response: 'Just example change' })
+    console.log('clicked')
   }
 
   render () {
@@ -18,7 +18,6 @@ class App extends Component {
         <div className='App-header'>
           <img src={logo} className='App-logo' alt='logo' />
           <h2>A simplified way to organize your meetings</h2>
-          <p>{this.state.response}</p>
         </div>
         <div>
           <button className='marginTop big' onClick={this.handleExampleInvoke}>

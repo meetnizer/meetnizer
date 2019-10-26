@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "A application to make your meeting productive",
   "homepage": "./",
-  "main": "main.js",
+  "main": "src/electron-starter.js",
   "scripts": {
     "lint": "standard --fix",
     "test": "npm run lint && jest --coverage",
+    "testReact": "react-scripts test --env=jsdom",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "eject": "react-scripts eject",
@@ -27,10 +28,10 @@
     "jest": "^24.9.0",
     "standard": "^14.3.1",
     "foreman": ">=3.0.1",
-    "react-scripts": "0.8.5"
+    "react-scripts": "0.8.5",
+    "eslint": "^5.16.0"
   },
   "dependencies": {
-    "eslint": "^5.16.0",
     "moment": "^2.24.0",
     "nedb": "^1.8.0",
     "react": "^16.1.1",
