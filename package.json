@@ -3,16 +3,10 @@
   "version": "1.0.0",
   "description": "A application to make your meeting productive",
   "homepage": "./",
-  "main": "src/electron-starter.js",
   "scripts": {
     "lint": "standard --fix",
     "test": "npm run lint && jest --coverage",
-    "testReact": "react-scripts test --env=jsdom",
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "eject": "react-scripts eject",
-    "electron": "electron .",
-    "dev": "nf start -p 8070"
+    "electron": "electron ."
   },
   "repository": "https://github.com/meetnizer/meetnizer",
   "keywords": [
@@ -27,8 +21,6 @@
     "electron": "^6.0.12",
     "jest": "^24.9.0",
     "standard": "^14.3.1",
-    "foreman": ">=3.0.1",
-    "react-scripts": "0.8.5",
     "eslint": "^5.16.0"
   },
   "dependencies": {
