@@ -1,15 +1,13 @@
 import React, { Component } from 'react'
 import logo from './img/logomarca_white.png'
 import './App.css'
+const electron = window.require('electron');
+const fs = electron.remote.require('fs');
+const ipcRenderer  = electron.ipcRenderer;
 
 class App extends Component {
   constructor (props) {
     super(props)
-    //this.setState({ response: 'init' })
-  }
-
-  handleExampleInvoke () {
-    console.log('clicked')
   }
 
   render () {
@@ -20,8 +18,8 @@ class App extends Component {
           <h2>A simplified way to organize your meetings</h2>
         </div>
         <div>
-          <button className='marginTop big' onClick={this.handleExampleInvoke}>
-            Começar
+          <button className='marginTop big'>
+            Start
           </button>
         </div>
       </div>

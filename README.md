@@ -21,6 +21,14 @@ A Item must have at least one session:
 
 `Itens[0..*] > Session[1..*]`
 
+## Electron + React
+
+This app use the structure developed in this github <https://github.com/csepulv/electron-with-create-react-app>
+
+and this post <https://www.freecodecamp.org/news/building-an-electron-application-with-create-react-app-97945861647c/>
+
+To start the application locally **npm run dev**
+
 ## License
 
 [MIT](LICENSE)
