@@ -10,6 +10,10 @@ class App extends Component {
     super(props)
   } */
 
+  handleStart () {
+    console.log('aqui')
+  }
+  
   render () {
     return (
       <div className='App'>
@@ -18,7 +22,7 @@ class App extends Component {
           <h2>A simplified way to organize your meetings</h2>
         </div>
         <div>
-          <button className='marginTop big'>
+          <button className='marginTop big' onClick={this.handleStart}>
             Start
           </button>
         </div>
