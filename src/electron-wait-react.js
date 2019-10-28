@@ -2,7 +2,7 @@ const net = require('net')
 
 const port = process.env.PORT ? (process.env.PORT - 100) : 3000
 
-process.env.ELECTRON_START_URL = `http://localhost:${port}`;
+process.env.ELECTRON_START_URL = `http://localhost:${port}`
 
 const client = new net.Socket()
 
@@ -24,5 +24,5 @@ const tryConnection = () => client.connect({ port: port }, () => {
 tryConnection()
 
 client.on('error', () => {
-  setTimeout(tryConnection, 1000);
+  setTimeout(tryConnection, 1000)
 })

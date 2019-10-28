@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import logo from './img/logomarca_white.png'
 import './App.css'
-const electron = window.require('electron');
-const fs = electron.remote.require('fs');
-const ipcRenderer  = electron.ipcRenderer;
+// const electron = window.require('electron')
+// const fs = electron.remote.require('fs')
+// const ipcRenderer = electron.ipcRenderer
 
 class App extends Component {
-  constructor (props) {
+  /* constructor (props) {
     super(props)
-  }
+  } */
 
   render () {
     return (
