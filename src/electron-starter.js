@@ -1,10 +1,11 @@
 const electron = require('electron')
 // Module to control application life.
-const { app, ipcMain } = require('electron')
+const { app } = require('electron')
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow
 const path = require('path')
 const url = require('url')
+const meeting = require('./controller/Meeting')
 // const setupService = require('../services/setup')
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -33,10 +34,8 @@ function createWindow () {
     // when you should delete the corresponding element.
     mainWindow = null
   })
-
-  ipcMain.on('test.message', (event, args) => {
-    event.reply('test.reply', 'abcdefghijlmnop')
-  })
+  // setup custom events
+  meeting()
 }
 
 // This method will be called when Electron has finished

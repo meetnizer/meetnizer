@@ -8,10 +8,20 @@ const ipcRenderer = electron.ipcRenderer
 class App extends Component {
   constructor (props) {
     super(props)
+    this.state = {
+      configured: 'n/a'
+    }
+  }
 
+  componentDidMount () {
     ipcRenderer.on('test.reply', (event, args) => {
-      console.log('===>>>', args)
+      this.testReply(args)
     })
+  }
+
+  testReply (args) {
+    console.log(args)
+    this.setState({ configured: args.configured ? 'yes' : 'nooo' })
   }
 
   handleStart () {
@@ -29,6 +39,7 @@ class App extends Component {
           <button className='marginTop big' onClick={this.handleStart}>
             Start
           </button>
+          <h3>{this.state.configured}</h3>
         </div>
       </div>
     )
