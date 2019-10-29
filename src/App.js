@@ -12,7 +12,7 @@ class App extends Component {
     ipcRenderer.on('test.reply', (event, args) => {
       console.log('===>>>', args)
     })
-  } 
+  }
 
   handleStart () {
     ipcRenderer.send('test.message', 'meu valor', 123)

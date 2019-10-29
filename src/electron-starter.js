@@ -5,7 +5,7 @@ const { app, ipcMain } = require('electron')
 const BrowserWindow = electron.BrowserWindow
 const path = require('path')
 const url = require('url')
-const setupService = require('../services/setup')
+// const setupService = require('../services/setup')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
