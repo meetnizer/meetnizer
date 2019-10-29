@@ -1,18 +1,11 @@
-/*
-const { ipcMain } = require('electron')
-ipcMain.on('synchronous-message', (event, arg) => {
-  console.log(arg) // prints "ping"
-  event.returnValue = 'pong'
-})
-*/
 const electron = require('electron')
 // Module to control application life.
 const { app, ipcMain } = require('electron')
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow
-
 const path = require('path')
 const url = require('url')
+const setupService = require('../services/setup')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -41,8 +34,8 @@ function createWindow () {
     mainWindow = null
   })
 
-  ipcMain.on('test', () => {
-    console.log('test')
+  ipcMain.on('test.message', (event, args) => {
+    event.reply('test.reply', 'abcdefghijlmnop')
   })
 }
 
