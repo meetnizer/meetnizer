@@ -1,37 +1,55 @@
 const fs = require('fs')
 const path = require('path')
-// var homedir = require('os').homedir()
+const homedir = require('os').homedir()
 // var configDir = path.join(homedir, 'timet.json')
-function isConfigured (appPath) {
-  return fs.existsSync(getConfigFileName(appPath))
+function isConfigured () {
+  return fs.existsSync(getConfigFileName())
 }
 
-function getConfiguration (appPath) {
-  return JSON.parse(fs.readFileSync(getConfigFileName(appPath)))
+function getConfiguration () {
+  return JSON.parse(fs.readFileSync(getConfigFileName()))
 }
 
-function getConfigFileName (appPath) {
-  return path.join(appPath, 'settings.json')
+function getConfigFileName () {
+  return path.join(homedir, 'settings.json')
+}
+function getDbFilesNames (dbFilePath) {
+  const colMeeting = path.join(dbFilePath, 'collection.meeting.db')
+  const colItem = path.join(dbFilePath, 'collection.item.db')
+
+  return { collectionMeeting: colMeeting, collectionItem: colItem }
 }
 
-function createConfigFile (appPath, dbFile) {
-  var config = {
-    dbFiles: [dbFile],
-    timerDefault: 5
-  }
-  saveConfig(appPath, config)
-}
+function createDbFile (dbFilePath) {
+  let config
 
-function saveConfig (appPath, config) {
-  fs.writeFileSync(
-    getConfigFileName(appPath),
-    JSON.stringify(config, null, 4))
-}
-module.exports =
-    {
-      isConfigured,
-      getConfiguration,
-      getConfigFileName,
-      createConfigFile,
-      saveConfig
+  if (!isConfigured()) {
+    config = {
+      dbFiles: [getDbFilesNames(dbFilePath)],
+      timerDefault: 5
     }
+  } else {
+    config = getConfiguration()
+    config.dbFiles.map(item => {
+      if (item.collectionMeeting.indexOf(dbFilePath) >= 0 ||
+          item.collectionItem.indexOf(dbFilePath) >= 0) {
+        throw new Error('configuration.dbfiles.path.exists')
+      }
+    })
+
+    config.dbFiles.push(getDbFilesNames(dbFilePath))
+  }
+
+  fs.writeFileSync(
+    getConfigFileName(),
+    JSON.stringify(config, null, 4)
+  )
+}
+
+module.exports =
+  {
+    isConfigured,
+    getConfiguration,
+    getConfigFileName,
+    createDbFile
+  }

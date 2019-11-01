@@ -1,46 +1,69 @@
 const setupSrv = require('../services/setup')
-const appLocalPath = __dirname
+const homedir = require('os').homedir()
 const fs = require('fs')
 const path = require('path')
 
 function removeFile () {
-  const file = setupSrv.getConfigFileName(appLocalPath)
+  const file = setupSrv.getConfigFileName()
   if (fs.existsSync(file)) { fs.unlinkSync(file) }
 }
 
 test('getConfigFileName', function () {
-  expect(setupSrv.getConfigFileName(appLocalPath)).toBe(path.join(__dirname, 'settings.json'))
+  expect(setupSrv.getConfigFileName()).toBe(path.join(homedir, 'settings.json'))
 })
 
 test('isConfigured()', function () {
   removeFile()
-  const config = setupSrv.isConfigured(appLocalPath)
+  const config = setupSrv.isConfigured(homedir)
   expect(config).toBe(false)
 })
 
 test('createConfig()', function () {
-  const dbPath = `${__dirname}/mydb.db`
-  setupSrv.createConfigFile(appLocalPath, dbPath)
-  const config = setupSrv.getConfiguration(appLocalPath)
-  expect(config.dbFiles[0]).toBe(dbPath)
+  const dbPath = `${__dirname}`
+  setupSrv.createDbFile(dbPath)
+  const config = setupSrv.getConfiguration()
+  expect(config.dbFiles[0].collectionItem).toBe(path.join(dbPath, 'collection.item.db'))
+  expect(config.dbFiles[0].collectionMeeting).toBe(path.join(dbPath, 'collection.meeting.db'))
   expect(config.timerDefault).toBe(5)
   removeFile()
 })
 
 test('saveConfig()', function () {
-  const dbPath = `${__dirname}/mydb.db`
-  const dbPath1 = `${__dirname}/mydb1.db`
-  setupSrv.createConfigFile(appLocalPath, dbPath)
+  const dbPath = path.join(__dirname, '/meeting1/')
+  const dbPath1 = path.join(__dirname, '/meeting2/')
+  setupSrv.createDbFile(dbPath)
 
-  var config = setupSrv.getConfiguration(appLocalPath)
-  config.dbFiles.push(dbPath1)
+  var config = setupSrv.getConfiguration(homedir)
 
-  setupSrv.saveConfig(appLocalPath, config)
+  setupSrv.createDbFile(dbPath1)
 
-  config = setupSrv.getConfiguration(appLocalPath)
-  expect(config.dbFiles[0]).toBe(dbPath)
-  expect(config.dbFiles[1]).toBe(dbPath1)
+  config = setupSrv.getConfiguration(homedir)
+  expect(config.dbFiles.length).toBe(2)
   expect(config.timerDefault).toBe(5)
+
+  removeFile()
+})
+
+test('saveConfigDuplicated()', function () {
+  const dbPath = path.join(__dirname, '/meeting1/')
+  setupSrv.createDbFile(dbPath)
+  try {
+    setupSrv.createDbFile(dbPath)
+  } catch (err) {
+    expect(err.message).toBe('configuration.dbfiles.path.exists')
+  }
+
+  removeFile()
+})
+
+test('emptyDbPath()', function () {
+  const dbPath = ''
+  setupSrv.createDbFile(dbPath)
+  try {
+    setupSrv.createDbFile(dbPath)
+  } catch (err) {
+    expect(err.message).toBe('configuration.dbfiles.path.exists')
+  }
 
   removeFile()
 })
