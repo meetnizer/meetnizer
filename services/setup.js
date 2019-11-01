@@ -13,31 +13,35 @@ function getConfiguration () {
 function getConfigFileName () {
   return path.join(homedir, 'settings.json')
 }
-function getDbFilesNames (dbFilePath) {
+function getDbFilesNames (alias, dbFilePath) {
   const colMeeting = path.join(dbFilePath, 'collection.meeting.db')
   const colItem = path.join(dbFilePath, 'collection.item.db')
 
-  return { collectionMeeting: colMeeting, collectionItem: colItem }
+  return { alias: alias, collectionMeeting: colMeeting, collectionItem: colItem }
 }
 
-function createDbFile (dbFilePath) {
+function createDbFile (alias, dbFilePath) {
   let config
 
   if (!isConfigured()) {
     config = {
-      dbFiles: [getDbFilesNames(dbFilePath)],
+      dbFiles: [getDbFilesNames(alias, dbFilePath)],
       timerDefault: 5
     }
   } else {
     config = getConfiguration()
     config.dbFiles.map(item => {
+      console.log(item.alias, alias)
+      if (item.alias === alias) {
+        throw new Error('configuration.dbfiles.alias.duplicated')
+      }
       if (item.collectionMeeting.indexOf(dbFilePath) >= 0 ||
           item.collectionItem.indexOf(dbFilePath) >= 0) {
         throw new Error('configuration.dbfiles.path.exists')
       }
     })
 
-    config.dbFiles.push(getDbFilesNames(dbFilePath))
+    config.dbFiles.push(getDbFilesNames(alias, dbFilePath))
   }
 
   fs.writeFileSync(

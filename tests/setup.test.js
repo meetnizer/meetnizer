@@ -2,6 +2,8 @@ const setupSrv = require('../services/setup')
 const homedir = require('os').homedir()
 const fs = require('fs')
 const path = require('path')
+const alias = 'team'
+const alias1 = 'prj1'
 
 function removeFile () {
   const file = setupSrv.getConfigFileName()
@@ -20,7 +22,7 @@ test('isConfigured()', function () {
 
 test('createConfig()', function () {
   const dbPath = `${__dirname}`
-  setupSrv.createDbFile(dbPath)
+  setupSrv.createDbFile(alias, dbPath)
   const config = setupSrv.getConfiguration()
   expect(config.dbFiles[0].collectionItem).toBe(path.join(dbPath, 'collection.item.db'))
   expect(config.dbFiles[0].collectionMeeting).toBe(path.join(dbPath, 'collection.meeting.db'))
@@ -31,11 +33,11 @@ test('createConfig()', function () {
 test('saveConfig()', function () {
   const dbPath = path.join(__dirname, '/meeting1/')
   const dbPath1 = path.join(__dirname, '/meeting2/')
-  setupSrv.createDbFile(dbPath)
+  setupSrv.createDbFile(alias, dbPath)
 
   var config = setupSrv.getConfiguration(homedir)
 
-  setupSrv.createDbFile(dbPath1)
+  setupSrv.createDbFile(alias1, dbPath1)
 
   config = setupSrv.getConfiguration(homedir)
   expect(config.dbFiles.length).toBe(2)
@@ -46,9 +48,9 @@ test('saveConfig()', function () {
 
 test('saveConfigDuplicated()', function () {
   const dbPath = path.join(__dirname, '/meeting1/')
-  setupSrv.createDbFile(dbPath)
+  setupSrv.createDbFile(alias, dbPath)
   try {
-    setupSrv.createDbFile(dbPath)
+    setupSrv.createDbFile(alias1, dbPath)
   } catch (err) {
     expect(err.message).toBe('configuration.dbfiles.path.exists')
   }
@@ -58,12 +60,24 @@ test('saveConfigDuplicated()', function () {
 
 test('emptyDbPath()', function () {
   const dbPath = ''
-  setupSrv.createDbFile(dbPath)
+  setupSrv.createDbFile(alias, dbPath)
   try {
-    setupSrv.createDbFile(dbPath)
+    setupSrv.createDbFile(alias1, dbPath)
   } catch (err) {
     expect(err.message).toBe('configuration.dbfiles.path.exists')
   }
 
+  removeFile()
+})
+
+test('duplicateAlias()', function () {
+  const dbPath = path.join(__dirname, '/meeting1/')
+  const dbPath1 = path.join(__dirname, '/meeting2/')
+  setupSrv.createDbFile(alias, dbPath)
+  try {
+    setupSrv.createDbFile(alias, dbPath1)
+  } catch (err) {
+    expect(err.message).toBe('configuration.dbfiles.alias.duplicated')
+  }
   removeFile()
 })

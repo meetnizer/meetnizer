@@ -1,31 +1,29 @@
 import React, { Component } from 'react'
+// import { Button } from 'reactstrap'
 import logo from './img/logomarca_white.png'
 import './App.css'
+
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
-// const fs = electron.remote.require('fs')
 
 class App extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      configured: 'n/a'
+      configured: '',
+      userData: ''
     }
   }
 
   componentDidMount () {
-    ipcRenderer.on('test.reply', (event, args) => {
-      this.testReply(args)
+    ipcRenderer.on('checkConfiguration.reply', (event, args) => {
+      this.configCheck(args)
     })
+    ipcRenderer.send('checkConfiguration.message')
   }
 
-  testReply (args) {
-    console.log(args)
-    this.setState({ configured: args.configured ? 'yes' : 'nooo' })
-  }
-
-  handleStart () {
-    ipcRenderer.send('test.message', 'meu valor', 123)
+  configCheck (args) {
+    this.setState({ configured: args.configured, userData: args.userData })
   }
 
   render () {
@@ -36,10 +34,7 @@ class App extends Component {
           <h2>A simplified way to organize your meetings</h2>
         </div>
         <div>
-          <button className='marginTop big' onClick={this.handleStart}>
-            Start
-          </button>
-          <h3>{this.state.configured}</h3>
+          <h3>{this.state.configured}{this.state.userData}</h3>
         </div>
       </div>
     )
@@ -47,3 +42,9 @@ class App extends Component {
 }
 
 export default App
+/*
+<Button color='danger'>Danger!</Button>
+          <button className='marginTop big' onClick={this.handleStart}>
+            Start
+          </button>
+*/
