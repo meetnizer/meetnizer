@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-// import { Button } from 'reactstrap'
+import { Button } from 'reactstrap'
+import NewMeeting from './screens/NewMeeting'
 import logo from './img/logomarca_white.png'
 import './App.css'
 
@@ -11,19 +12,29 @@ class App extends Component {
     super(props)
     this.state = {
       configured: '',
-      userData: ''
+      userData: '',
+      openModal: false
     }
+
+    this.handleSetupNewMeeting = this.handleSetupNewMeeting.bind(this)
   }
 
   componentDidMount () {
-    ipcRenderer.on('checkConfiguration.reply', (event, args) => {
-      this.configCheck(args)
+    ipcRenderer.on('setup.configCheck.reply', (event, args) => {
+      this.setState({ configured: args.configured, userData: args.userData })
+      if (this.state.configured) {
+        ipcRenderer.send('setup.config.message')
+      }
     })
-    ipcRenderer.send('checkConfiguration.message')
+    ipcRenderer.send('setup.configCheck.message')
+
+    ipcRenderer.on('setup.config.message.reply', (event,args) => {
+      this.setState({ config: args })
+    })
   }
 
-  configCheck (args) {
-    this.setState({ configured: args.configured, userData: args.userData })
+  handleSetupNewMeeting () {
+    this.setState({ openModal: true })
   }
 
   render () {
@@ -34,7 +45,10 @@ class App extends Component {
           <h2>A simplified way to organize your meetings</h2>
         </div>
         <div>
-          <h3>{this.state.configured}{this.state.userData}</h3>
+          {!(this.state.configured) ? <Button onClick={this.handleSetupNewMeeting}>Create a meeting</Button> : ''}
+          {this.state.config ? <Button>Open meeting {this.state.config.dbFiles[0].alias}</Button> : ''}
+          <br /><span>Default configuration file location: {this.state.userData}</span>
+          {this.state.openModal ? <NewMeeting /> : ''}
         </div>
       </div>
     )
