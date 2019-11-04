@@ -1,6 +1,6 @@
-const { app, ipcMain } = require('electron')
-const userData = app.getPath('userData')
+const { ipcMain } = require('electron')
 const setupSrv = require('../../services/setup')
+const userData = setupSrv.getHomeDir()
 
 module.exports = function () {
   ipcMain.on('setup.configCheck.message', (event, args) => {

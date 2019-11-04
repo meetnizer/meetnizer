@@ -1,7 +1,11 @@
 const fs = require('fs')
 const path = require('path')
 const homedir = require('os').homedir()
-// var configDir = path.join(homedir, 'timet.json')
+
+function getHomeDir () {
+  return homedir
+}
+
 function isConfigured () {
   return fs.existsSync(getConfigFileName())
 }
@@ -11,7 +15,7 @@ function getConfiguration () {
 }
 
 function getConfigFileName () {
-  return path.join(homedir, 'settings.json')
+  return path.join(homedir, 'meetnizer.config.json')
 }
 function getDbFilesNames (alias, dbFilePath) {
   const colMeeting = path.join(dbFilePath, 'collection.meeting.db')
@@ -31,7 +35,6 @@ function createDbFile (alias, dbFilePath) {
   } else {
     config = getConfiguration()
     config.dbFiles.map(item => {
-      console.log(item.alias, alias)
       if (item.alias === alias) {
         throw new Error('configuration.dbfiles.alias.duplicated')
       }
@@ -55,5 +58,6 @@ module.exports =
     isConfigured,
     getConfiguration,
     getConfigFileName,
-    createDbFile
+    createDbFile,
+    getHomeDir
   }

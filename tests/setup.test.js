@@ -11,7 +11,7 @@ function removeFile () {
 }
 
 test('getConfigFileName', function () {
-  expect(setupSrv.getConfigFileName()).toBe(path.join(homedir, 'settings.json'))
+  expect(setupSrv.getConfigFileName()).toBe(path.join(homedir, 'meetnizer.config.json'))
 })
 
 test('isConfigured()', function () {

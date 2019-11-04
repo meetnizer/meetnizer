@@ -28,8 +28,17 @@ class App extends Component {
     })
     ipcRenderer.send('setup.configCheck.message')
 
-    ipcRenderer.on('setup.config.message.reply', (event,args) => {
+    ipcRenderer.on('setup.config.message.reply', (event, args) => {
       this.setState({ config: args })
+    })
+
+    ipcRenderer.on('setup.create.reply', (event, args) => {
+      console.log('setup.create.reply')
+      if (args.config) {
+        this.setState({ openModal: false, config: args.config })
+      } else {
+        console.log('errr', args, event)
+      }
     })
   }
 
