@@ -27,6 +27,7 @@ test('createConfig()', function () {
   expect(config.dbFiles[0].collectionItem).toBe(path.join(dbPath, 'collection.item.db'))
   expect(config.dbFiles[0].collectionMeeting).toBe(path.join(dbPath, 'collection.meeting.db'))
   expect(config.timerDefault).toBe(5)
+  expect(setupSrv.hasDbFiles()).toBe(true)
   removeFile()
 })
 

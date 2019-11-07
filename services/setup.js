@@ -5,7 +5,18 @@ const homedir = require('os').homedir()
 function getHomeDir () {
   return homedir
 }
+function hasDbFiles () {
+  const config = getConfiguration()
+  if (config) {
+    if (config.dbFiles) {
+      if (config.dbFiles.length > 0) {
+        return true
+      }
+    }
+  }
 
+  return false
+}
 function isConfigured () {
   return fs.existsSync(getConfigFileName())
 }
@@ -59,5 +70,6 @@ module.exports =
     getConfiguration,
     getConfigFileName,
     createDbFile,
-    getHomeDir
+    getHomeDir,
+    hasDbFiles
   }

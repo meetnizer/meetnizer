@@ -1,24 +1,34 @@
 const { ipcMain } = require('electron')
 const setupSrv = require('../../services/setup')
 const userData = setupSrv.getHomeDir()
+const Util = require('./Util')
 
 module.exports = function () {
   ipcMain.on('setup.configCheck.message', (event, args) => {
-    const configured = setupSrv.isConfigured(userData)
-    event.reply('setup.configCheck.reply', { configured, userData })
+    try {
+      const userData = setupSrv.getHomeDir()
+      const configured = setupSrv.isConfigured() && setupSrv.hasDbFiles()
+      event.reply('setup.configCheck.reply', Util.Ok({ configured, userData }))
+    } catch (err) {
+      event.reply('setup.configCheck.reply', Util.Error({ err }))
+    }
   })
 
   ipcMain.on('setup.config.message', (event, args) => {
-    event.reply('setup.config.message.reply', setupSrv.getConfiguration())
+    try {
+      event.reply('setup.config.message.reply', Util.Ok(setupSrv.getConfiguration()))
+    } catch (err) {
+      event.reply('setup.config.message.reply', Util.Error(err))
+    }
   })
 
   ipcMain.on('setup.create.message', (event, args) => {
     try {
       setupSrv.createDbFile(args.alias, args.dbPath)
       const config = setupSrv.getConfiguration()
-      event.reply('setup.create.reply', config)
+      event.reply('setup.create.reply', Util.Ok(config))
     } catch (err) {
-      event.reply('setup.create.reply', err)
+      event.reply('setup.create.reply', Util.Error(err))
     }
   })
 }
