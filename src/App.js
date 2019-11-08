@@ -69,10 +69,10 @@ class App extends Component {
           <img src={logo} className='App-logo' alt='logo' />
           <h2>A simplified way to organize your meetings</h2>
         </div>
-        <div>
+        <div class='App-Content'>
           {!(this.state.configured) ? <Button onClick={this.handleSetupNewMeeting}>Create a meeting</Button> : ''}
           {(this.state.configured) ? <Button>Open meeting {this.state.config.dbFiles[0].alias}</Button> : ''}
-          <br /><span>Default configuration file location: {this.state.userData}</span>
+          <br /><br /><span>Default configuration file location: {this.state.userData}</span>
           {this.state.openModal ? <NewMeeting /> : ''}
         </div>
       </div>

@@ -12,13 +12,13 @@
 
 .App-header {
   background-color: #5cc693;
-  height: 150px;
   padding: 20px;
-  padding-top: 100px;
-  padding-bottom: 100px;
+  padding-top: 50px;
   color: white;
 }
-
+.App-Content {
+  padding-top: 25px;
+}
 .App-intro {
   font-size: large;
 }
