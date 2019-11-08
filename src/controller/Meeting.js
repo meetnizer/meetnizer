@@ -1,6 +1,5 @@
 const { ipcMain } = require('electron')
 const setupSrv = require('../../services/setup')
-const userData = setupSrv.getHomeDir()
 const Util = require('./Util')
 
 module.exports = function () {
