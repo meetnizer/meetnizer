@@ -13,7 +13,7 @@
     "eject": "react-scripts eject",
     "electron": "electron .",
     "dev": "nf start -p 8070",
-    "commit": "npm run lint && git add ."
+    "commit": "standard && git add ."
   },
   "repository": "https://github.com/meetnizer/meetnizer",
   "keywords": [

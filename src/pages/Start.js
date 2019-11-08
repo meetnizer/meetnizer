@@ -64,7 +64,7 @@ class Start extends Component {
   }
 
   handleOpenMeeting () {
-    // this.props.historyhistory.push('/dashboard');
+    this.props.history.push(`/meeting/${this.state.config.dbFiles[0].alias}`)
   }
 
   render () {
