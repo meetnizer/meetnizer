@@ -64,6 +64,7 @@ class Start extends Component {
   }
 
   handleOpenMeeting () {
+    ipcRenderer.send('meeting.setSelected', { alias: this.state.config.dbFiles[0].alias })
     this.props.history.push(`/meeting/${this.state.config.dbFiles[0].alias}`)
   }
 

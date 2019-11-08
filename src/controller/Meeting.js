@@ -1,6 +1,7 @@
 const { ipcMain } = require('electron')
 const setupSrv = require('../../services/setup')
 const Util = require('./Util')
+let meetingAlias
 
 module.exports = function () {
   ipcMain.on('setup.configCheck.message', (event, args) => {
@@ -30,4 +31,10 @@ module.exports = function () {
       event.reply('setup.create.reply', Util.Error(err))
     }
   })
+
+  ipcMain.on('meeting.setSelected', (event, args) => {
+    meetingAlias = args.alias
+  })
+
+  console.log(meetingAlias)
 }
