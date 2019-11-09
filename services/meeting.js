@@ -39,7 +39,7 @@ function saveMeeting (db, obj) {
   })
 }
 
-function getAllMeetings (db, callback) {
+function getAllMeetings (db) {
   return new Promise((resolve, reject) => {
     db.find({}, (err, recordSet) => {
       if (err) reject(err)

@@ -1,7 +1,13 @@
 const { ipcMain } = require('electron')
 const setupSrv = require('../../services/setup')
+const meetingSrv = require('../../services/meeting')
 const Util = require('./Util')
+var Datastore = require('nedb')
+
 let meetingAlias
+let config
+let meetingDb
+let itemDb
 
 module.exports = function () {
   ipcMain.on('setup.configCheck.message', (event, args) => {
@@ -16,16 +22,33 @@ module.exports = function () {
 
   ipcMain.on('setup.config.message', (event, args) => {
     try {
-      event.reply('setup.config.message.reply', Util.Ok(setupSrv.getConfiguration()))
+      config = setupSrv.getConfiguration()
+      event.reply('setup.config.message.reply', Util.Ok(config))
     } catch (err) {
       event.reply('setup.config.message.reply', Util.Error(err))
     }
   })
 
-  ipcMain.on('setup.create.message', (event, args) => {
+  ipcMain.on('setup.create.message', async (event, args) => {
     try {
       setupSrv.createDbFile(args.alias, args.dbPath)
-      const config = setupSrv.getConfiguration()
+      config = setupSrv.getConfiguration()
+      for (const dbFile in config.dbFiles) {
+        if (dbFile.alias === args.alias) {
+          meetingDb = new Datastore({
+            autoload: true,
+            filename: dbFile.collectionMeeting
+          })
+          itemDb = new Datastore({
+            autoload: true,
+            filename: dbFile.collectionItem
+          })
+          await meetingSrv.newMeeting(meetingDb, dbFile.alias)
+        }
+      }
+      if (!meetingDb || !itemDb) {
+        throw new Error('database.initialization.failed')
+      }
       event.reply('setup.create.reply', Util.Ok(config))
     } catch (err) {
       event.reply('setup.create.reply', Util.Error(err))
