@@ -4,7 +4,7 @@ import '../App.css'
 import Session from './Session'
 import { Button } from 'reactstrap'
 
-export default function Meeting ({ match }) {
+export default function Meeting ({ match, history }) {
   const [data, setData] = useState([])
 
   useEffect(() => {
@@ -14,6 +14,9 @@ export default function Meeting ({ match }) {
   }, [])
   function handleNewSession () {
     setData(data.push({ name: 'name2' }))
+  }
+  function handleEndSession () {
+    history.push('/')
   }
   return (
     <div>
@@ -26,6 +29,7 @@ export default function Meeting ({ match }) {
       </div>
       <div className='CommandBar'>
         <Button onClick={handleNewSession}>Create Session</Button>
+        <Button onClick={handleEndSession}>End Session</Button>
       </div>
     </div>
   )

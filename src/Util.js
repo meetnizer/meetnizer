@@ -1,7 +1,7 @@
-const { dialog } = window.require('electron')
+const { remote } = window.require('electron')
 
 function showError (data) {
-  dialog.showErrorBox('Internal Error', JSON.stringify(data.data))
+  remote.dialog.showErrorBox('Internal Error', JSON.stringify(data.data))
 }
 
 module.exports = showError
