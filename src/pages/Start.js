@@ -39,7 +39,6 @@ class Start extends Component {
       ShowError(args)
       return
     }
-    console.log('a', args.data)
     this.setState({ configured: args.data.configured, config: args.data.config, hasDbFiles: args.data.hasDbFiles })
   }
 

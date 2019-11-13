@@ -75,6 +75,15 @@ function Events () {
       event.reply('meeting.create.message.reply', Util.Error(err))
     }
   })
+
+  ipcMain.on('meeting.session.message', async (event, args) => {
+    try {
+      const meeting = await meetingSrv.findById(meetingDb, args.id)
+      event.reply('meeting.session.message.reply', Util.Ok({ sessions: meeting.sessions }))
+    } catch (err) {
+      event.reply('meeting.session.message.reply', Util.Error(err))
+    }
+  })
 }
 
 module.exports = { Events }

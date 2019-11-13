@@ -4,15 +4,32 @@ import '../App.css'
 import Session from './Session'
 import { Button } from 'reactstrap'
 
+const electron = window.require('electron')
+const ipcRenderer = electron.ipcRenderer
+
 export default function Meeting ({ match, history, location }) {
+  const id = match.params.id
   const name = match.params.name
   const [data, setData] = useState([])
+
+  useEffect(() => {
+    ipcRenderer.send('meeting.session.message', { id })
+    ipcRenderer.on('meeting.session.message.reply', (event, args) => {
+      console.log(JSON.stringify(args))
+    })
+
+    // returned function will be called on component unmount
+    return () => {
+      ipcRenderer.removeAllListeners('meeting.session.message.reply')
+    }
+  }, [])
 
   useEffect(() => {
     setData([
       { name: 'name1' }
     ])
   }, [])
+
   function handleNewSession () {
     setData(data.push({ name: 'name2' }))
   }
