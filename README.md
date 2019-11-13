@@ -29,6 +29,10 @@ and this post <https://www.freecodecamp.org/news/building-an-electron-applicatio
 
 To start the application locally **npm run dev**
 
+## View
+
+For the renderer part we are using https://reactstrap.github.io/
+
 ## License
 
 [MIT](LICENSE)

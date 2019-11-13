@@ -12,17 +12,59 @@
 
 .App-header {
   background-color: #5cc693;
-  height: 150px;
   padding: 20px;
-  padding-top: 100px;
-  padding-bottom: 100px;
+  padding-top: 50px;
   color: white;
 }
-
+.App-Content {
+  padding-top: 25px;
+}
 .App-intro {
   font-size: large;
 }
 
+.App-SmallHeader {
+  background-color: #93b0a2;
+  color: white;
+  height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+}
+
+.App-logo-Small {
+  height: 50px;
+  padding-left:10px;
+  padding-right:20px;
+}
+
+.App-logo-small-text {
+  font-weight: bold;
+  font-size: 25px;
+}
+
+.SessionsBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top:10px;
+  padding-bottom:10px;
+  flex-direction: column;
+}
+.SessionItem {
+  border-radius: 5px;
+  border-color:#5cc693;
+  border-width: thin;
+  border-style: solid;
+  padding-top:10px;
+  padding-bottom: 10px;
+  margin-bottom: 8px;
+  width: 100%;
+  padding-left: 10px;
+  padding-right: 10px;
+}
 button {
   padding: 20px;
   padding-left: 30px;
