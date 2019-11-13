@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import Header from './Header'
+import Header from '../components/Header'
 import '../App.css'
 import Session from './Session'
 import { Button } from 'reactstrap'
 
-export default function Meeting ({ match, history }) {
+export default function Meeting ({ match, history, location }) {
+  const name = match.params.name
   const [data, setData] = useState([])
 
   useEffect(() => {
@@ -20,7 +21,7 @@ export default function Meeting ({ match, history }) {
   }
   return (
     <div>
-      <Header title={match.params.id} />
+      <Header title={name} />
       <div className='SessionsBox'>
         {data.length === 0 ? 'Opps.. you don`t have a section yet, create using the button below' : ''}
         {data.map(item => (

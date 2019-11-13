@@ -6,6 +6,10 @@ function getHomeDir () {
   return homedir
 }
 function hasDbFiles () {
+  if (!isConfigured()) {
+    return false
+  }
+
   const config = getConfiguration()
   if (config) {
     if (config.dbFiles) {

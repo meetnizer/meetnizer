@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import { Button } from 'reactstrap'
-import NewMeeting from '../modal/NewMeeting'
+import NewWorkspace from '../modal/NewWorkspace'
+import Welcome from '../components/Welcome'
 import logo from '../img/logomarca_white.png'
 import '../App.css'
-import ShowError from '../Util'
+import ShowError from '../UtilView'
+import Workspace from './Workspace'
 
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
@@ -14,58 +16,44 @@ class Start extends Component {
     this.state = {
       configured: '',
       userData: '',
-      openModal: false
+      openWorkspaceModal: false
     }
 
-    this.handleSetupNewMeeting = this.handleSetupNewMeeting.bind(this)
-    this.handleOpenMeeting = this.handleOpenMeeting.bind(this)
+    this.handleStartConfiguration = this.handleStartConfiguration.bind(this)
   }
 
   componentDidMount () {
     ipcRenderer.send('setup.configCheck.message')
-
-    ipcRenderer.on('setup.configCheck.reply', (event, args) => {
-      if (args.error) {
-        ShowError(args)
-        return
-      }
-
-      this.setState({
-        configured: false,
-        userData: args.data.userData
-      })
-
-      if (args.data.configured) {
-        ipcRenderer.send('setup.config.message')
-      }
-    })
-
-    ipcRenderer.on('setup.config.message.reply', (event, args) => {
-      if (args.error) {
-        ShowError(args)
-        return
-      }
-
-      this.setState({ configured: true, config: args.data })
-    })
-
-    ipcRenderer.on('setup.create.reply', (event, args) => {
-      if (args.error) {
-        ShowError(args)
-        return
-      }
-
-      this.setState({ openModal: false, configured: true, config: args.data })
-    })
+    ipcRenderer.on('setup.configCheck.message.reply', (event, args) => { this.receiveConfigMessage(args) })
+    ipcRenderer.on('setup.create.workspace.message.reply', (event, args) => { ShowError(args) })
   }
 
-  handleSetupNewMeeting () {
-    this.setState({ openModal: true })
+  componentWillUnmount () {
+    ipcRenderer.removeAllListeners('setup.configCheck.message')
+    ipcRenderer.removeAllListeners('setup.create.workspace.message.reply')
+    ipcRenderer.removeAllListeners('setup.configCheck.message.reply')
   }
 
-  handleOpenMeeting () {
-    ipcRenderer.send('meeting.setSelected', { alias: this.state.config.dbFiles[0].alias })
-    this.props.history.push(`/meeting/${this.state.config.dbFiles[0].alias}`)
+  receiveConfigMessage (args) {
+    if (args.err) {
+      ShowError(args)
+      return
+    }
+    console.log('a', args.data)
+    this.setState({ configured: args.data.configured, config: args.data.config, hasDbFiles: args.data.hasDbFiles })
+  }
+
+  isNeverConfigured () {
+    if (this.state.configured) {
+      if (this.state.hasDbFiles) {
+        return false
+      }
+    }
+    return true
+  }
+
+  handleStartConfiguration () {
+    this.setState({ openWorkspaceModal: true })
   }
 
   render () {
@@ -76,11 +64,11 @@ class Start extends Component {
           <h2>A simplified way to organize your meetings</h2>
         </div>
         <div className='App-Content'>
-          {!(this.state.configured) ? <Button onClick={this.handleSetupNewMeeting}>Create a meeting</Button> : ''}
-          {(this.state.configured) ? <Button onClick={this.handleOpenMeeting}>Open meeting {this.state.config.dbFiles[0].alias}</Button> : ''}
-          <br /><br /><span>Default configuration file location: {this.state.userData}</span>
-          {this.state.openModal ? <NewMeeting /> : ''}
+          {this.isNeverConfigured() ? <Welcome /> : ''}
+          {this.isNeverConfigured() ? <Button onClick={this.handleStartConfiguration}>Start configuration</Button> : ''}
+          {!this.isNeverConfigured() ? <Workspace data={this.state.config} /> : ''}
         </div>
+        {this.state.openWorkspaceModal ? <NewWorkspace /> : ''}
       </div>
     )
   }
