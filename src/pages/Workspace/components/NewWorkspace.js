@@ -13,16 +13,22 @@ import {
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
 
-export default function NewMeeting (props) {
+export default function NewWorkspace (props) {
   const [modal, setModal] = useState(true)
   const [alias, setAlias] = useState('')
+  const [directory, setDirectory] = useState('')
 
   function handleToggle () {
     setModal(!modal)
+    props.close()
   }
   function handleSave () {
-    ipcRenderer.send('meeting.create.message', { name: alias })
+    ipcRenderer.send('setup.create.workspace.message', { alias: alias, dbPath: directory })
     setModal(!modal)
+    props.close()
+  }
+  function handleDirectoryChange (evt) {
+    setDirectory(evt.target.value)
   }
   function handleNameChange (evt) {
     setAlias(evt.target.value)
@@ -31,14 +37,23 @@ export default function NewMeeting (props) {
   return (
     <div>
       <Modal isOpen={modal} toggle={handleToggle} autoFocus={false}>
-        <ModalHeader toggle={handleToggle}>Create a new meeting</ModalHeader>
+        <ModalHeader toggle={handleToggle}>Create a new workspace</ModalHeader>
         <ModalBody>
           <InputGroup>
             <InputGroupAddon addonType='prepend'>Name</InputGroupAddon>
             <Input
-              name='name' value={alias} autoFocus
-              type='text' onChange={handleNameChange}
-              placeholder='What is the name? (e.g Team Meeting, Project X Status)'
+              name='name' value={alias} type='text'
+              autoFocus onChange={handleNameChange}
+              placeholder='What is the name? (e.g Tech, Marketing, Projects)'
+            />
+          </InputGroup>
+          <br />
+          <InputGroup>
+            <InputGroupAddon addonType='prepend'>Folder</InputGroupAddon>
+            <Input
+              name='directory' value={directory}
+              type='text' onChange={handleDirectoryChange}
+              placeholder='Copy and paste the folder location'
             />
           </InputGroup>
         </ModalBody>

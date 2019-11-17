@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import Header from '../components/Header'
-import '../App.css'
-import Session from './Session'
+import SmallHeader from '../components/SmallHeader'
+import './App.css'
+import SessionItem from './components/SessionItem'
 import { Button } from 'reactstrap'
+import ShowError from '../../UtilView'
 
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
 
-export default function Meeting ({ match, history, location }) {
+export default function Meeting ({ match, history }) {
   const id = match.params.id
   const name = match.params.name
   const [data, setData] = useState([])
@@ -15,7 +16,11 @@ export default function Meeting ({ match, history, location }) {
   useEffect(() => {
     ipcRenderer.send('meeting.session.message', { id })
     ipcRenderer.on('meeting.session.message.reply', (event, args) => {
-      console.log(JSON.stringify(args))
+      if (args.error) {
+        ShowError(args)
+        return
+      }
+      setData(args.data.sessions)
     })
 
     // returned function will be called on component unmount
@@ -24,29 +29,24 @@ export default function Meeting ({ match, history, location }) {
     }
   }, [])
 
-  useEffect(() => {
-    setData([
-      { name: 'name1' }
-    ])
-  }, [])
-
   function handleNewSession () {
-    setData(data.push({ name: 'name2' }))
+    history.push('/session/new')
   }
   function handleEndSession () {
     history.push('/')
   }
   return (
     <div>
-      <Header title={name} />
+      <SmallHeader title={name} />
       <div className='SessionsBox'>
         {data.length === 0 ? 'Opps.. you don`t have a section yet, create using the button below' : ''}
-        {data.map(item => (
-          <Session key={item.name} item={item} />
+        {data.map((item, index) => (
+          <SessionItem key={index} item={item} />
         ))}
       </div>
       <div className='CommandBar'>
         <Button onClick={handleNewSession}>Create Session</Button>
+        &nbsp;
         <Button onClick={handleEndSession}>End Session</Button>
       </div>
     </div>

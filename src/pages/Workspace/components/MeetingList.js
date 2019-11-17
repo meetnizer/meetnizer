@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import ShowError from '../UtilView'
+import ShowError from '../../../UtilView'
 import { Button } from 'reactstrap'
-import NewMeeting from '../modal/NewMeeting'
+import NewMeeting from './NewMeeting'
 import { useHistory } from 'react-router-dom'
 
 const electron = window.require('electron')
@@ -13,7 +13,7 @@ const MeetingList = (props) => {
   const [openModal, setOpenModal] = useState(false)
   // equivalent to componentWillMount
   useEffect(() => {
-    ipcRenderer.send('workspace.getmeetings.message', { alias: props.data.alias })
+    ipcRenderer.send('workspace.getmeetings.message', { alias: props.data })
     ipcRenderer.on('workspace.getmeetings.message.reply', (event, args) => {
       if (args.error) {
         ShowError(args)
@@ -40,10 +40,13 @@ const MeetingList = (props) => {
     history.push(`/meeting/${meetingId}/${meetingName}`)
   }
   function handleCreateMeeting () {
-    setOpenModal(true)
+    setOpenModal(!openModal)
   }
   return (
     <div>
+      <Button onClick={() => handleCreateMeeting()}>Create a meeting</Button>
+      <br />
+      <br />
       {!meetingList || meetingList.length > 0 ? <h5>Select a meeting:</h5> : ''}
       <br />
       {meetingList && meetingList.map((item, index) => (
@@ -51,8 +54,7 @@ const MeetingList = (props) => {
           <a href='#' onClick={() => redirect(item._id, item.name)}>{item.name}</a>
         </h6>
       ))}
-      <Button onClick={() => handleCreateMeeting()}>Create a meeting</Button>
-      {openModal ? <NewMeeting /> : ''}
+      {openModal ? <NewMeeting close={handleCreateMeeting} /> : ''}
     </div>
   )
 }
