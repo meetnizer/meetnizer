@@ -1,15 +1,20 @@
-function addItem (db, meetingId, sessionId, name, owner, time, recurrent) {
+function addItem (db, meetingId, sessionId, name, owner, time, recurrent, order) {
+  if (!order) {
+    order = 0
+    // const list = await findAll(db, meetingId, sessionId)
+  }
   return new Promise((resolve, reject) => {
     db.insert(
       {
         name,
         owner,
-        time,
+        time: Number(time),
         done: false,
         recurrent,
         meetingId,
         sessions: [sessionId],
-        comments: []
+        comments: [],
+        order
       }, (err, recordSet) => {
         if (err) reject(err)
         resolve(recordSet)
@@ -28,7 +33,7 @@ function findById (db, itemId) {
 
 function findAll (db, meetingId, sessionId) {
   return new Promise((resolve, reject) => {
-    db.find({ meetingId: meetingId, sessions: { $in: [sessionId] } }, (err, recordSet) => {
+    db.find({ meetingId: meetingId, sessions: { $in: [sessionId] } }).sort({ order: 1 }).exec((err, recordSet) => {
       if (err) reject(err)
       resolve(recordSet)
     })

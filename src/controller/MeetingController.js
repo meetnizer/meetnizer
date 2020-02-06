@@ -1,13 +1,30 @@
 const { ipcMain } = require('electron')
+// const moment = require('moment')
 const setupSrv = require('../../services/setup')
 const Util = require('../UtilMainProcess')
 const meetingSrv = require('../../services/meeting')
+const sessionSrv = require('../../services/session')
+const itemSrv = require('../../services/item')
 var Datastore = require('nedb')
 
 let config
 let meetingDb
 let itemDb
+let selectedMeeting
+let selectedSession
 
+async function getItemsForSession (event) {
+  try {
+    const items = await itemSrv.findAll(itemDb, selectedMeeting._id, selectedSession.date)
+    event.reply('session.items.message.reply', Util.Ok({
+      meetingName: selectedMeeting.name,
+      items: items,
+      durationInMinutes: selectedSession.durationInMinutes
+    }))
+  } catch (err) {
+    event.reply('session.items.message.reply', Util.Error(err))
+  }
+}
 function loadConfig (event) {
   try {
     const userData = setupSrv.getHomeDir()
@@ -78,10 +95,65 @@ function Events () {
 
   ipcMain.on('meeting.session.message', async (event, args) => {
     try {
-      const meeting = await meetingSrv.findById(meetingDb, args.id)
-      event.reply('meeting.session.message.reply', Util.Ok({ sessions: meeting.sessions }))
+      selectedMeeting = await meetingSrv.findById(meetingDb, args.id)
+      event.reply('meeting.session.message.reply', Util.Ok({ name: selectedMeeting.name, sessions: selectedMeeting.sessions }))
     } catch (err) {
       event.reply('meeting.session.message.reply', Util.Error(err))
+    }
+  })
+
+  ipcMain.on('meeting.session.create.message', async (event, args) => {
+    try {
+      selectedMeeting = sessionSrv.addSession(selectedMeeting, args.name, args.date, args.duration)
+      meetingSrv.saveMeeting(meetingDb, selectedMeeting)
+      event.reply('meeting.session.message.reply', Util.Ok({ sessions: selectedMeeting.sessions }))
+    } catch (err) {
+      event.reply('meeting.session.create.message.reply', Util.Error(err))
+    }
+  })
+
+  ipcMain.on('meeting.end.message', (event, args) => {
+    meetingDb = undefined
+    itemDb = undefined
+    selectedMeeting = undefined
+    selectedSession = undefined
+  })
+
+  ipcMain.on('session.items.message', (event, args) => {
+    // selectedSession = sessionSrv.findByDate(selectedMeeting, moment(args.sessionDate, 'YYYY-MM-DD'))
+    selectedSession = sessionSrv.findByDate(selectedMeeting, new Date(args.sessionDate))
+    getItemsForSession(event)
+  })
+
+  ipcMain.on('session.item.create.message', async (event, args) => {
+    try {
+      await itemSrv.addItem(itemDb, selectedMeeting._id, selectedSession.date, args.name, args.owner, args.time, args.recurrent)
+      getItemsForSession(event)
+    } catch (err) {
+      event.reply('session.item.create.message.reply', Util.Error(err))
+    }
+  })
+  /*
+  ipcMain.on('meeting.session.delete.message', async (event, args) => {
+    console.log(args.date, args.meetingId)
+  })
+  */
+  ipcMain.on('session.item.message', async (event, args) => {
+    // const id = args._id
+    const action = args.action
+    switch (action) {
+      case 'moveup':
+        getItemsForSession(event)
+        break
+      case 'movedown':
+        getItemsForSession(event)
+        break
+      case 'remove':
+        getItemsForSession(event)
+        break
+      case 'done':
+        getItemsForSession(event)
+        break
     }
   })
 }

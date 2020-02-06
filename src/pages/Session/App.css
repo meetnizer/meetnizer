@@ -1,0 +1,65 @@
+.ItemBox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top:10px;
+    padding-bottom:10px;
+    flex-direction: column;
+  }
+.ItemArea {
+    display: flex;
+    flex-direction: row;
+    border-radius: 5px;
+    border-color:#5cc693;
+    border-width: thin;
+    border-style: solid;
+    margin-bottom: 8px;
+    width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.ItemAreaFirst {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  flex:10%;
+}
+.ItemAreaSecond {
+  padding-left: 10px;
+  flex:60%;
+}
+.ItemAreaThird {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  flex:30%;
+}
+.SessionButtomBar {
+  padding-left: 10px;
+}
+.SessionHeader {
+  padding-left: 10px;
+  padding-right: 10px;
+  width: 100%;
+  background-color: lightgray;
+  margin-bottom: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-radius: 5px;
+}
+
+.ActionIcon {
+  font-size: 24px;
+  cursor: pointer;
+  color: green;
+}
+
+.ActionIconRed {
+  font-size: 24px;
+  color: red;
+  cursor: pointer;
+}

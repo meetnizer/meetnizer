@@ -1,6 +1,6 @@
 import React from 'react'
-import '../../App.css'
-import logo from '../../img/logo.png'
+import '../../Global.css'
+import logo from '../../img/logomarca_white.png'
 
 export default function SmallHeader (props) {
   return (

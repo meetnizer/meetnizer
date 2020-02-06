@@ -1,3 +1,5 @@
+const Util = require('./util')
+
 function findById (meeting, sessionId) {
   for (var i = 0; i < meeting.sessions.length; i++) {
     if (meeting.sessions[i].name === sessionId) {
@@ -7,11 +9,22 @@ function findById (meeting, sessionId) {
   return null
 }
 
-function addSession (db, meeting, name, date, durationInHours) {
+function findByDate (meeting, sessionDate) {
+  for (var i = 0; i < meeting.sessions.length; i++) {
+    if (new Date(meeting.sessions[i].date).getTime() === sessionDate.getTime()) {
+      return meeting.sessions[i]
+    }
+  }
+  return null
+}
+
+function addSession (meeting, name, date, durationInMinutes) {
+  Util.isValidDate(date)
+
   const session = {
     name,
-    date,
-    durationInHours,
+    date: date,
+    durationInMinutes,
     finish: false
   }
   meeting.sessions.push(session)
@@ -34,5 +47,6 @@ function getLastSession (meeting) {
 module.exports = {
   findById,
   addSession,
-  getLastSession
+  getLastSession,
+  findByDate
 }

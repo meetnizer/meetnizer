@@ -19,7 +19,6 @@ const MeetingList = (props) => {
         ShowError(args)
         return
       }
-      console.log('list of meetings', args.data)
       setMeetingList(args.data)
     })
     ipcRenderer.on('meeting.create.message.reply', (event, args) => {
@@ -37,7 +36,7 @@ const MeetingList = (props) => {
     }
   }, [])
   function redirect (meetingId, meetingName) {
-    history.push(`/meeting/${meetingId}/${meetingName}`)
+    history.push(`/meeting/${meetingId}`)
   }
   function handleCreateMeeting () {
     setOpenModal(!openModal)

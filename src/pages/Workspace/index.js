@@ -4,7 +4,7 @@ import ShowError from '../../UtilView'
 import BigHeader from '../components/BigHeader'
 import { Button } from 'reactstrap'
 import NewWorkspace from './components/NewWorkspace'
-
+import '../../Global.css'
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
 
@@ -20,7 +20,9 @@ const Workspace = (props) => {
         ShowError(args)
         return
       }
-      setDbFiles(args.data.config.dbFiles)
+      if (args.data.hasDbFiles) {
+        setDbFiles(args.data.config.dbFiles)
+      }
     })
     ipcRenderer.on('setup.create.workspace.message.reply', (event, args) => { ShowError(args) })
     ipcRenderer.on('workspace.selected.message.reply', (event, args) => {

@@ -38,6 +38,7 @@
     "nedb": "^1.8.0",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
+    "react-icons": "^3.9.0",
     "react-router-dom": "^5.1.2",
     "reactstrap": "^8.1.1"
   },

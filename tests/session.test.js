@@ -22,11 +22,11 @@ test('createSession', async function () {
   const myDate = moment('21/10/2019', 'DD/MM/YYYY')
 
   const myMeeting = await meetingSrv.newMeeting(db, 'Team Meeting')
-  const obj = sessionSrv.addSession(db, myMeeting, 'First monday of the month', myDate, 2)
+  const obj = sessionSrv.addSession(myMeeting, 'First monday of the month', myDate.toDate(), 2)
   expect(obj.sessions.length).toBe(1)
   expect(moment(obj.sessions[0].date).format('DD/MM/YYYY')).toBe('21/10/2019')
   expect(obj.sessions[0].name).toBe('First monday of the month')
-  expect(obj.sessions[0].durationInHours).toBe(2)
+  expect(obj.sessions[0].durationInMinutes).toBe(2)
   expect(obj.sessions[0].finish).toBe(false)
 
   await meetingSrv.saveMeeting(db, obj)
@@ -37,7 +37,7 @@ test('createSession', async function () {
 
   expect(result.sessions.length).toBe(1)
   expect(result.sessions[0].name).toBe('First monday of the month')
-  expect(result.sessions[0].durationInHours).toBe(2)
+  expect(result.sessions[0].durationInMinutes).toBe(2)
   expect(result.sessions[0].finish).toBe(false)
 
   const sessionResult = sessionSrv.findById(myMeeting, 'First monday of the month')
@@ -60,13 +60,27 @@ test('getLastSession', async function () {
   })
   const myMeeting = await meetingSrv.newMeeting(db, 'Team Meeting')
 
-  sessionSrv.addSession(db, myMeeting, 'test1', moment('21/10/2019', 'DD/MM/YYYY'), 2)
-  sessionSrv.addSession(db, myMeeting, 'test2', moment('21/01/2019', 'DD/MM/YYYY'), 2)
-  sessionSrv.addSession(db, myMeeting, 'test3', moment('21/09/2019', 'DD/MM/YYYY'), 2)
+  sessionSrv.addSession(myMeeting, 'test1', moment('21/10/2019', 'DD/MM/YYYY').toDate(), 2)
+  sessionSrv.addSession(myMeeting, 'test2', moment('21/01/2019', 'DD/MM/YYYY').toDate(), 2)
+  sessionSrv.addSession(myMeeting, 'test3', moment('21/09/2019', 'DD/MM/YYYY').toDate(), 2)
 
   expect(myMeeting.sessions.length).toBe(3)
 
   const lastSession = sessionSrv.getLastSession(myMeeting)
   expect(lastSession).not.toBe(null)
   expect(moment(lastSession.date).format('YYYY/MM/DD')).toBe('2019/01/21')
+})
+test('find by date', async function () {
+  var db = new Datastore({
+    autoload: true
+  })
+  let myMeeting = await meetingSrv.newMeeting(db, 'Team Meeting')
+  sessionSrv.addSession(myMeeting, 'test 1', moment('21/10/2019', 'DD/MM/YYYY').toDate(), 2)
+  sessionSrv.addSession(myMeeting, 'test 2', moment('22/10/2019', 'DD/MM/YYYY').toDate(), 2)
+  meetingSrv.saveMeeting(db, myMeeting)
+
+  myMeeting = await meetingSrv.findById(db, myMeeting._id)
+  const session = sessionSrv.findByDate(myMeeting, moment('21/10/2019', 'DD/MM/YYYY').toDate())
+  expect(session).not.toBe(null)
+  expect(session.name).toBe('test 1')
 })

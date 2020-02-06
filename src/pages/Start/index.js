@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Button } from 'reactstrap'
 import Welcome from './components/Welcome'
 import BigHeader from '../components/BigHeader'
-import './App.css'
+import '../../Global.css'
 import ShowError from '../../UtilView'
 
 const electron = window.require('electron')

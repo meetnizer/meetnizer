@@ -13,8 +13,8 @@ export default function Routes () {
         <Route path='/' exact component={Start} />
         <Route path='/start' component={Start} />
         <Route path='/workspace' component={Workspace} />
-        <Route path='/meeting/:id/:name' component={Meeting} />
-        <Route path='/session/new' component={Session} />
+        <Route path='/meeting/:id' exact component={Meeting} />
+        <Route path='/meeting/:id/session/:date' component={Session} />
       </Switch>
     </BrowserRouter>
   )
