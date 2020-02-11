@@ -1,6 +1,19 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+const electron = window.require('electron')
+const ipcRenderer = electron.ipcRenderer
 
 export default function Header (props) {
+  // const [sessionRunning, setSessionRunning] = useState(false)
+  useEffect(() => {
+    ipcRenderer.on('session.start.message.reply', (event, args) => {
+      // setSessionRunning(args.start)
+    })
+    // returned function will be called on component unmount
+    return () => {
+      ipcRenderer.removeAllListeners('session.start.message.reply')
+    }
+  }, [])
+
   function SumMinutes () {
     var total = 0
 
@@ -16,8 +29,8 @@ export default function Header (props) {
         Total of minutes: {SumMinutes()}
       </div>
       <div>
-        Session duration in minutes: {props.sessionDuration}  ||
-        Real time: {props.sessionDuration - SumMinutes()}
+        Session max duration(minutes): {props.sessionDuration}  ||
+        Minutes remaining: {props.sessionDuration - SumMinutes()}
       </div>
     </div>
   )

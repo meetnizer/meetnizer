@@ -9,9 +9,13 @@ import {
   InputGroupAddon,
   Input,
   Label,
-  InputGroupText
+  InputGroupText,
+  Popover,
+  PopoverBody
 } from 'reactstrap'
-
+import {
+  MdInfo
+} from 'react-icons/md'
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
 
@@ -21,6 +25,9 @@ export default function NewItem (props) {
   const [owner, setOwner] = useState('')
   const [time, setTime] = useState(0)
   const [recurrent, setRecurrent] = useState(false)
+
+  const [popoverOpen, setPopoverOpen] = useState(false)
+  const toggle = () => setPopoverOpen(!popoverOpen)
 
   function handleToggle () {
     setModal(!modal)
@@ -85,6 +92,10 @@ export default function NewItem (props) {
               </InputGroupText>
             </InputGroupAddon>
             <Label>Recurrent</Label>
+            <MdInfo id='recurrentItem' className='ActionIcon' />
+            <Popover placement='left' isOpen={popoverOpen} target='recurrentItem' toggle={toggle}>
+              <PopoverBody>When marked indicates that it will occurs in every new session created</PopoverBody>
+            </Popover>
           </InputGroup>
         </ModalBody>
         <ModalFooter>

@@ -4,8 +4,10 @@ import {
   MdArrowDownward,
   MdRemoveCircle,
   MdCheckBoxOutlineBlank,
-  MdCheckBox
+  MdCheckBox,
+  MdStar
 } from 'react-icons/md'
+import ItemGauge from './ItemGauge'
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
 
@@ -31,25 +33,46 @@ export default function Item (props) {
   function done () {
     ipcRenderer.send('session.item.message', {
       _id: props.data._id,
-      action: 'done'
+      action: 'done',
+      status: !props.data.done
     })
   }
-  return (
-    <div className='ItemArea'>
-      <div className='ItemAreaFirst'>
-        {props.data.done
-          ? <MdCheckBox className='ActionIcon' onClick={() => done()} />
-          : <MdCheckBoxOutlineBlank className='ActionIcon' onClick={() => done()} />}
-      </div>
-      <div className='ItemAreaSecond'>
-        {props.data.name} - {props.data.time} - {props.data.owner}
-        <br /> Number of sessions: {props.data.sessions.length}
-      </div>
+  function drawActions () {
+    if (props.data.recurrent) {
+      return false
+    }
+    return true
+  }
+
+  function getActionButtons () {
+    return (
       <div className='ItemAreaThird'>
         <MdArrowUpward className='ActionIcon' onClick={() => moveUp()} />
         <MdArrowDownward className='ActionIcon' onClick={() => moveDown()} />
         <MdRemoveCircle className='ActionIconRed' onClick={() => remove()} />
       </div>
+    )
+  }
+  return (
+    <div className='ItemArea'>
+      <div className='ItemAreaFirst'>
+        {drawActions() === false
+          ? <MdStar className='ActionIcon' />
+          : props.data.done
+            ? <MdCheckBox className='ActionIcon' onClick={() => done()} />
+            : <MdCheckBoxOutlineBlank className='ActionIcon' onClick={() => done()} />}
+      </div>
+      <div className='ItemAreaSecond'>
+        <div className='ItemAreaSecondA'>
+          {props.data.name} - {props.data.time} - {props.data.owner}
+        </div>
+        <div className='ItemAreaSecondB'>
+          <ItemGauge key={props._id} quantity={props.data.sessions.length} />
+        </div>
+      </div>
+      {drawActions()
+        ? getActionButtons()
+        : <div className='ItemAreaThird' />}
     </div>
   )
 }

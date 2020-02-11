@@ -48,9 +48,11 @@ export default function Session ({ match, history }) {
     setModalItem(!modalItem)
   }
   function handleStartSession () {
+    ipcRenderer.send('session.start.message', { start: true })
     setRunning(true)
   }
   function handleEndSession () {
+    ipcRenderer.send('session.start.message', { start: false })
     setRunning(false)
   }
 

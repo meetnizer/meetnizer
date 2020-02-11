@@ -139,22 +139,31 @@ function Events () {
   })
   */
   ipcMain.on('session.item.message', async (event, args) => {
-    // const id = args._id
+    const id = args._id
     const action = args.action
+    const status = args.status
     switch (action) {
       case 'moveup':
+        await itemSrv.changeOrder(itemDb, selectedMeeting._id, selectedSession.date, id, true)
         getItemsForSession(event)
         break
       case 'movedown':
+        await itemSrv.changeOrder(itemDb, selectedMeeting._id, selectedSession.date, id, false)
         getItemsForSession(event)
         break
       case 'remove':
+        await itemSrv.remove(itemDb, id)
         getItemsForSession(event)
         break
       case 'done':
+        await itemSrv.changeStatus(itemDb, id, status)
         getItemsForSession(event)
         break
     }
+  })
+
+  ipcMain.on('session.start.message', async (event, args) => {
+    event.reply('session.start.message.reply', args)
   })
 }
 
