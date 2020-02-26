@@ -25,6 +25,15 @@ async function getItemsForSession (event) {
     event.reply('session.items.message.reply', Util.Error(err))
   }
 }
+
+async function getAllSessionsOfMeeting (event, meetingId) {
+  try {
+    selectedMeeting = await meetingSrv.findById(meetingDb, meetingId)
+    event.reply('meeting.session.message.reply', Util.Ok({ name: selectedMeeting.name, sessions: selectedMeeting.sessions }))
+  } catch (err) {
+    event.reply('meeting.session.message.reply', Util.Error(err))
+  }
+}
 function loadConfig (event) {
   try {
     const userData = setupSrv.getHomeDir()
@@ -94,19 +103,21 @@ function Events () {
   })
 
   ipcMain.on('meeting.session.message', async (event, args) => {
-    try {
-      selectedMeeting = await meetingSrv.findById(meetingDb, args.id)
-      event.reply('meeting.session.message.reply', Util.Ok({ name: selectedMeeting.name, sessions: selectedMeeting.sessions }))
-    } catch (err) {
-      event.reply('meeting.session.message.reply', Util.Error(err))
-    }
+    getAllSessionsOfMeeting(event, args.id)
   })
 
   ipcMain.on('meeting.session.create.message', async (event, args) => {
     try {
-      selectedMeeting = sessionSrv.addSession(selectedMeeting, args.name, args.date, args.duration)
-      meetingSrv.saveMeeting(meetingDb, selectedMeeting)
-      event.reply('meeting.session.message.reply', Util.Ok({ sessions: selectedMeeting.sessions }))
+      const lastSession = sessionSrv.getLastSession(selectedMeeting)
+
+      if (args.copyLastSession && lastSession) {
+        selectedMeeting = sessionSrv.addSession(selectedMeeting, args.name, args.date, args.duration)
+        await itemSrv.setupNewSession(itemDb, selectedMeeting._id, lastSession.date, args.date)
+      } else {
+        selectedMeeting = sessionSrv.addSession(selectedMeeting, args.name, args.date, args.duration)
+      }
+      await meetingSrv.saveMeeting(meetingDb, selectedMeeting)
+      getAllSessionsOfMeeting(event, selectedMeeting._id)
     } catch (err) {
       event.reply('meeting.session.create.message.reply', Util.Error(err))
     }
@@ -133,11 +144,7 @@ function Events () {
       event.reply('session.item.create.message.reply', Util.Error(err))
     }
   })
-  /*
-  ipcMain.on('meeting.session.delete.message', async (event, args) => {
-    console.log(args.date, args.meetingId)
-  })
-  */
+
   ipcMain.on('session.item.message', async (event, args) => {
     const id = args._id
     const action = args.action
@@ -164,6 +171,17 @@ function Events () {
 
   ipcMain.on('session.start.message', async (event, args) => {
     event.reply('session.start.message.reply', args)
+  })
+
+  ipcMain.on('meeting.session.delete.message', async (event, args) => {
+    try {
+      selectedMeeting = sessionSrv.deleteSession(selectedMeeting, args.date)
+
+      await meetingSrv.saveMeeting(meetingDb, selectedMeeting)
+      getAllSessionsOfMeeting(event, selectedMeeting._id)
+    } catch (err) {
+      event.reply('meeting.session.delete.message.reply', Util.Error(err))
+    }
   })
 }
 

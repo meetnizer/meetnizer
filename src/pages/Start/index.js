@@ -3,7 +3,8 @@ import { Button } from 'reactstrap'
 import Welcome from './components/Welcome'
 import BigHeader from '../components/BigHeader'
 import '../../Global.css'
-import ShowError from '../../UtilView'
+import './App.css'
+import UtilView from '../../UtilView'
 
 const electron = window.require('electron')
 const ipcRenderer = electron.ipcRenderer
@@ -25,7 +26,7 @@ class Start extends Component {
     ipcRenderer.send('setup.configCheck.message')
     ipcRenderer.on('setup.configCheck.message.reply', (event, args) => {
       if (args.error) {
-        ShowError(args)
+        UtilView.showError(args)
         return
       }
 
@@ -40,7 +41,7 @@ class Start extends Component {
 
   receiveConfigMessage (args) {
     if (args.err) {
-      ShowError(args)
+      UtilView.showError(args)
       return
     }
     this.setState(

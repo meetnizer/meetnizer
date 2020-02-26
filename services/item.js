@@ -93,9 +93,9 @@ function changeStatus (db, itemId, status) {
 function setupNewSession (db, meetingId, sessionId, newSessionId) {
   return new Promise((resolve, reject) => {
     db.update(
-      { meetingId: meetingId, sessions: [sessionId], $or: [{ done: false }, { recurrent: true }] },
+      { meetingId: meetingId, sessions: { $in: [sessionId] }, $or: [{ done: false }, { recurrent: true }] },
       { $push: { sessions: newSessionId } },
-      {}, (err, affectedRows) => {
+      { multi: true }, (err, affectedRows) => {
         if (err) reject(err)
         if (affectedRows === 0) {
           reject(new Error('setup.new.session.failed'))
@@ -131,7 +131,6 @@ function changeOrder (db, meetingId, sessionId, itemId, up) {
               { $set: { order: (recordSetFindAll[update1Index].order - factor) } },
               { upsert: false }, (err, affectedRows) => {
                 if (err) {
-                  console.log('error processing itemId step 1' + recordSetFindAll[i]._id + '. Err: ' + err)
                   resolve(false)
                   return
                 }
@@ -141,7 +140,6 @@ function changeOrder (db, meetingId, sessionId, itemId, up) {
                   { $set: { order: (recordSetFindAll[update2Index].order + factor) } },
                   { upsert: false }, (err, affectedRows) => {
                     if (err) {
-                      console.log('error processing itemId step 2' + recordSetFindAll[i - 1]._id + '. Err: ' + err)
                       resolve(false)
                       return
                     }

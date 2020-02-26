@@ -19,8 +19,21 @@
   width: 100%;
   padding-left: 10px;
   padding-right: 10px;
+  display: flex;
+  flex-direction: row;
 }
-
+.SessionItemFirst {
+  align-items: center;
+  justify-content: space-evenly;
+  flex:70%;
+}
+.SessionItemSecond {
+  flex:30%;
+  align-items: center;
+  justify-content: space-evenly;
+  flex-direction: row;
+  display: flex;
+}
 .CommandBar {
   text-align: center;
 }

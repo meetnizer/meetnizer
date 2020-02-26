@@ -61,22 +61,6 @@
   border-radius: 5px;
 }
 
-.ActionIcon {
-  font-size: 24px;
-  cursor: pointer;
-  color: green;
-}
-
-.ActionIconRed {
-  font-size: 24px;
-  color: red;
-  cursor: pointer;
-}
-
-.ActionGauge {
-  
-}
-
 .ActionGaugeOk {
   color: blue
 }

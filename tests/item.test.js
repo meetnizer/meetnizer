@@ -61,21 +61,20 @@ test('setupNewSession', async function () {
   })
   const newSessionId = 'aAeqwda'
 
-  await itemSrv.addItem(db, meetingId, sessionId, 'discuss about open source software', 'Bruno', 5, false)
-  await itemSrv.addItem(db, meetingId, sessionId, 'discuss about open source software', 'Bruno1', 5, false)
+  await itemSrv.addItem(db, meetingId, sessionId, 'subject 1', 'Xpto', 5, true)
+  await itemSrv.addItem(db, meetingId, sessionId, 'subject 2', 'Bruno', 5, false)
+  await itemSrv.addItem(db, meetingId, sessionId, 'subject 3', 'Bruno1', 5, false)
   const record = await itemSrv.addItem(db, meetingId, sessionId, 'discuss about serverless', 'Fabio', 5, false)
   const listResult = await itemSrv.findAll(db, meetingId, sessionId)
-  expect(listResult.length).toBe(3)
-  expect(listResult[0].order).toBe(0)
-  expect(listResult[1].order).toBe(1)
-  expect(listResult[2].order).toBe(2)
-  await itemSrv.changeStatus(db, record._id, true)
-  await itemSrv.setupNewSession(db, meetingId, sessionId, newSessionId)
+  expect(listResult.length).toBe(4)
+
+  let result = await itemSrv.changeStatus(db, record._id, true)
+  expect(result).toBe(true)
+  result = await itemSrv.setupNewSession(db, meetingId, sessionId, newSessionId)
+  expect(result).toBe(true)
+
   const listNewSession = await itemSrv.findAll(db, meetingId, newSessionId)
-  expect(listNewSession.length).toBe(1)
-  expect(listNewSession[0].sessions.length).toBe(2)
-  expect(listNewSession[0].sessions[0]).toBe(sessionId)
-  expect(listNewSession[0].sessions[1]).toBe(newSessionId)
+  expect(listNewSession.length).toBe(3)
 })
 
 test('addToSessionNotExists', async function () {
@@ -126,7 +125,7 @@ test('changeStatusExists', async function () {
   expect(result.length).toBe(1)
 })
 
-test('setupNewSession', async function () {
+test('setupNewSession - failed', async function () {
   var db = new Datastore({
     autoload: true
   })

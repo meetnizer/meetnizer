@@ -3,7 +3,7 @@ import SmallHeader from '../components/SmallHeader'
 import './App.css'
 import SessionItem from './components/SessionItem'
 import { Button } from 'reactstrap'
-import ShowError from '../../UtilView'
+import UtilView from '../../UtilView'
 import NewSession from './components/NewSession'
 
 const electron = window.require('electron')
@@ -19,7 +19,7 @@ export default function Meeting ({ match, history }) {
     ipcRenderer.send('meeting.session.message', { id })
     ipcRenderer.on('meeting.session.message.reply', (event, args) => {
       if (args.error) {
-        ShowError(args)
+        UtilView.showError(args)
         return
       }
       setName(args.data.name)
@@ -28,7 +28,7 @@ export default function Meeting ({ match, history }) {
     ipcRenderer.on('meeting.session.create.message.reply', (event, args) => {
       setModalSession(false)
       if (args.error) {
-        ShowError(args)
+        UtilView.showError(args)
       }
     })
 

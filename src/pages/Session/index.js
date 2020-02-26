@@ -15,13 +15,14 @@ export default function Session ({ match, history }) {
   const [meetingName, setMeetingName] = useState('')
   const [items, setItems] = useState([])
   const [modalItem, setModalItem] = useState(false)
-  const [running, setRunning] = useState(false)
+  // const [running, setRunning] = useState(false)
+  const running = false
   const [sessionDuration, setSessionDuration] = useState(0)
   useEffect(() => {
     ipcRenderer.send('session.items.message', { sessionDate })
     ipcRenderer.on('session.items.message.reply', (event, args) => {
       if (args.error) {
-        Util.ShowError(args)
+        Util.showError(args)
         setItems([])
         return
       }
@@ -31,7 +32,7 @@ export default function Session ({ match, history }) {
     })
     ipcRenderer.on('session.item.create.message', (event, args) => {
       if (args.error) {
-        Util.ShowError(args)
+        Util.showError(args)
       }
     })
     // returned function will be called on component unmount
@@ -47,6 +48,7 @@ export default function Session ({ match, history }) {
   function handleNewItem () {
     setModalItem(!modalItem)
   }
+  /*
   function handleStartSession () {
     ipcRenderer.send('session.start.message', { start: true })
     setRunning(true)
@@ -55,7 +57,7 @@ export default function Session ({ match, history }) {
     ipcRenderer.send('session.start.message', { start: false })
     setRunning(false)
   }
-
+  */
   return (
     <div>
       <SmallHeader title={meetingName + ' - ' + Util.formatDateToShow(new Date(sessionDate))} />
@@ -70,12 +72,13 @@ export default function Session ({ match, history }) {
         {!running ? <Button onClick={backToSessionList}>Back to session list</Button> : ''}
         &nbsp;&nbsp;&nbsp;
         <Button onClick={handleNewItem}>New Item</Button>
-        &nbsp;&nbsp;&nbsp;
-        {!running ? <Button onClick={handleStartSession} color='success'>Start Session</Button> : ''}
-        &nbsp;&nbsp;&nbsp;
-        {running ? <Button onClick={handleEndSession} color='danger'>End Session</Button> : ''}
       </div>
       {modalItem ? <NewItem close={handleNewItem} /> : ''}
     </div>
   )
 }
+
+// &nbsp;&nbsp;&nbsp;
+// {!running ? <Button onClick={handleStartSession} color='success'>Start Session</Button> : ''}
+// &nbsp;&nbsp;&nbsp;
+// {running ? <Button onClick={handleEndSession} color='danger'>End Session</Button> : ''}

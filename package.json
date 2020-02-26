@@ -15,6 +15,11 @@
     "dev": "nf start -p 8070",
     "commit": "standard && git add ."
   },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm test"
+    }
+  },
   "repository": "https://github.com/meetnizer/meetnizer",
   "keywords": [
     "Electron",
@@ -26,11 +31,12 @@
   "devDependencies": {
     "coveralls": "^3.0.7",
     "electron": "^6.0.12",
-    "jest": "^24.9.0",
-    "standard": "^14.3.1",
+    "eslint": "^5.16.0",
     "foreman": ">=3.0.1",
+    "husky": "^4.2.3",
+    "jest": "^24.9.0",
     "react-scripts": "0.8.5",
-    "eslint": "^5.16.0"
+    "standard": "^14.3.1"
   },
   "dependencies": {
     "bootstrap": "^4.3.1",

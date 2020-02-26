@@ -1,6 +1,8 @@
 <img src="https://github.com/meetnizer/design/blob/master/logomarca.png" width=300>
 
-Access meetnizer.github.io for other informations
+# Meetinizer
+
+Access meetnizer.github.io for other information
 
 [![Build status][build-image]][build-image]
 [![Test Coverage][coveralls-image]][coveralls-url]

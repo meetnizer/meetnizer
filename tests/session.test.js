@@ -84,3 +84,39 @@ test('find by date', async function () {
   expect(session).not.toBe(null)
   expect(session.name).toBe('test 1')
 })
+
+test('deleteSession - error cenarios', async function () {
+  var db = new Datastore({
+    autoload: true
+  })
+  await meetingSrv.newMeeting(db, 'Project Meeting')
+  const meetings = await meetingSrv.getAllMeetings(db)
+  expect(meetings.length).toBe(1)
+
+  const myMeeting = await meetingSrv.findById(db, meetings[0]._id)
+  expect(myMeeting).not.toBe(null)
+  const meetingSessionBefore = myMeeting.sessions
+
+  const result = sessionSrv.deleteSession(myMeeting, 'bbb')
+  expect(result.sessions).toBe(meetingSessionBefore)
+})
+
+test('deleteSession', async function () {
+  var db = new Datastore({
+    autoload: true
+  })
+
+  await meetingSrv.newMeeting(db, 'Project Meeting')
+  const meetings = await meetingSrv.getAllMeetings(db)
+  expect(meetings.length).toBe(1)
+
+  let myMeeting = sessionSrv.addSession(meetings[0], 'test 1', moment('21/10/2019', 'DD/MM/YYYY').toDate(), 2)
+  meetingSrv.saveMeeting(db, myMeeting)
+  myMeeting = await meetingSrv.findById(db, meetings[0]._id)
+  expect(myMeeting).not.toBe(null)
+  expect(myMeeting.sessions.length).toBe(1)
+
+  myMeeting = await sessionSrv.deleteSession(myMeeting, myMeeting.sessions[0].date)
+  expect(myMeeting).not.toBe(null)
+  expect(myMeeting.sessions.length).toBe(0)
+})

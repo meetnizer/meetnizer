@@ -7,8 +7,15 @@ import {
   ModalFooter,
   InputGroup,
   InputGroupAddon,
-  Input
+  InputGroupText,
+  Input,
+  Label,
+  Popover,
+  PopoverBody
 } from 'reactstrap'
+import {
+  MdInfo
+} from 'react-icons/md'
 import Util from '../../../UtilView'
 
 const electron = window.require('electron')
@@ -16,26 +23,34 @@ const ipcRenderer = electron.ipcRenderer
 
 export default function NewSession (props) {
   const [modal, setModal] = useState(true)
-  const [name, setName] = useState('')
+  // const [name, setName] = useState('')
   const [duration, setDuration] = useState('')
   const [date, setDate] = useState(new Date())
+  const [copyLastSession, setCopyLastSession] = useState(false)
+  const [popoverOpen, setPopoverOpen] = useState(false)
+  const toggle = () => setPopoverOpen(!popoverOpen)
 
   function handleToggle () {
     setModal(!modal)
     props.close()
   }
+  function handleCopyLastSessionChange (evt) {
+    setCopyLastSession(!copyLastSession)
+  }
   function handleSave () {
     ipcRenderer.send('meeting.session.create.message', {
-      name,
+      name: '',
       duration,
-      date
+      date,
+      copyLastSession
     })
     setModal(!modal)
     props.close()
   }
+  /*
   function handleNameChange (evt) {
     setName(evt.target.value)
-  }
+  } */
 
   function handleDurationChange (evt) {
     setDuration(evt.target.value)
@@ -57,14 +72,6 @@ export default function NewSession (props) {
         <ModalHeader toggle={handleToggle}>Create a new session</ModalHeader>
         <ModalBody>
           <InputGroup>
-            <InputGroupAddon addonType='prepend'>Name</InputGroupAddon>
-            <Input
-              name='name' value={name} autoFocus
-              type='text' onChange={handleNameChange}
-              placeholder='What is the name?'
-            />
-          </InputGroup>
-          <InputGroup>
             <InputGroupAddon addonType='prepend'>Duration</InputGroupAddon>
             <Input
               name='name' value={duration}
@@ -79,6 +86,18 @@ export default function NewSession (props) {
               type='date' onChange={handleDateChange}
             />
           </InputGroup>
+          <InputGroup>
+            <InputGroupAddon addonType='prepend'>
+              <InputGroupText>
+                <Input addon type='checkbox' value={copyLastSession} onChange={handleCopyLastSessionChange} />
+              </InputGroupText>
+            </InputGroupAddon>
+            <Label>Copy Last Session ?</Label>
+            <MdInfo id='recurrentItem' className='ActionIcon' />
+            <Popover placement='left' isOpen={popoverOpen} target='recurrentItem' toggle={toggle}>
+              <PopoverBody>When marked indicates this new session will copy all itens from the last session</PopoverBody>
+            </Popover>
+          </InputGroup>
         </ModalBody>
         <ModalFooter>
           <Button color='secondary' onClick={handleToggle}>Cancel</Button>
@@ -88,3 +107,14 @@ export default function NewSession (props) {
     </div>
   )
 }
+
+/*
+  <InputGroup>
+    <InputGroupAddon addonType='prepend'>Name</InputGroupAddon>
+    <Input
+      name='name' value={name} autoFocus
+      type='text' onChange={handleNameChange}
+      placeholder='What is the name?'
+    />
+  </InputGroup>
+*/

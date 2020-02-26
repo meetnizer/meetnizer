@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import MeetingList from './components/MeetingList'
-import ShowError from '../../UtilView'
+import UtilView from '../../UtilView'
 import BigHeader from '../components/BigHeader'
 import { Button } from 'reactstrap'
 import NewWorkspace from './components/NewWorkspace'
@@ -17,17 +17,17 @@ const Workspace = (props) => {
     ipcRenderer.send('setup.configCheck.message')
     ipcRenderer.on('setup.configCheck.message.reply', (event, args) => {
       if (args.error) {
-        ShowError(args)
+        UtilView.showError(args)
         return
       }
       if (args.data.hasDbFiles) {
         setDbFiles(args.data.config.dbFiles)
       }
     })
-    ipcRenderer.on('setup.create.workspace.message.reply', (event, args) => { ShowError(args) })
+    ipcRenderer.on('setup.create.workspace.message.reply', (event, args) => { UtilView.showError(args) })
     ipcRenderer.on('workspace.selected.message.reply', (event, args) => {
       if (args.error) {
-        ShowError(args)
+        UtilView.showError(args)
         return
       }
       setSelected(args.data.workspaceAlias)

@@ -44,9 +44,24 @@ function getLastSession (meeting) {
   return sessions[sessions.length - 1]
 }
 
+function deleteSession (meetingObj, sessionId) {
+  if (!meetingObj.sessions || meetingObj.sessions.length === 0) {
+    return meetingObj
+  }
+  var newArray = []
+  for (let i = 0; i < meetingObj.sessions.length; i++) {
+    if (meetingObj.sessions[i].date !== sessionId) {
+      newArray.push(meetingObj.sessions[i])
+    }
+  }
+  meetingObj.sessions = newArray
+  return meetingObj
+}
+
 module.exports = {
   findById,
   addSession,
   getLastSession,
-  findByDate
+  findByDate,
+  deleteSession
 }

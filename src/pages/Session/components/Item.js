@@ -44,15 +44,6 @@ export default function Item (props) {
     return true
   }
 
-  function getActionButtons () {
-    return (
-      <div className='ItemAreaThird'>
-        <MdArrowUpward className='ActionIcon' onClick={() => moveUp()} />
-        <MdArrowDownward className='ActionIcon' onClick={() => moveDown()} />
-        <MdRemoveCircle className='ActionIconRed' onClick={() => remove()} />
-      </div>
-    )
-  }
   return (
     <div className='ItemArea'>
       <div className='ItemAreaFirst'>
@@ -67,12 +58,16 @@ export default function Item (props) {
           {props.data.name} - {props.data.time} - {props.data.owner}
         </div>
         <div className='ItemAreaSecondB'>
-          <ItemGauge key={props._id} quantity={props.data.sessions.length} />
+          {drawActions()
+            ? <ItemGauge key={props._id} quantity={props.data.sessions.length} />
+            : ''}
         </div>
       </div>
-      {drawActions()
-        ? getActionButtons()
-        : <div className='ItemAreaThird' />}
+      <div className='ItemAreaThird'>
+        <MdArrowUpward className='ActionIcon' onClick={() => moveUp()} />
+        <MdArrowDownward className='ActionIcon' onClick={() => moveDown()} />
+        <MdRemoveCircle className='ActionIconRed' onClick={() => remove()} />
+      </div>
     </div>
   )
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import ShowError from '../../../UtilView'
+import UtilView from '../../../UtilView'
 import { Button } from 'reactstrap'
 import NewMeeting from './NewMeeting'
 import { useHistory } from 'react-router-dom'
@@ -16,7 +16,7 @@ const MeetingList = (props) => {
     ipcRenderer.send('workspace.getmeetings.message', { alias: props.data })
     ipcRenderer.on('workspace.getmeetings.message.reply', (event, args) => {
       if (args.error) {
-        ShowError(args)
+        UtilView.showError(args)
         return
       }
       setMeetingList(args.data)
@@ -24,7 +24,7 @@ const MeetingList = (props) => {
     ipcRenderer.on('meeting.create.message.reply', (event, args) => {
       setOpenModal(false)
       if (args.error) {
-        ShowError(args)
+        UtilView.showError(args)
         return
       }
       redirect(args.data.id, args.data.name)

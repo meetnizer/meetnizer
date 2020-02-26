@@ -3,7 +3,8 @@ function Ok (data) {
 }
 
 function Error (err) {
-  return { error: true, errorMessage: err.message, lineNumber: err.lineNumber, fileName: err.fileName }
+  const msg = { error: true, errorMessage: err.message, lineNumber: err.lineNumber, fileName: err.fileName }
+  return msg
 }
 
 module.exports = {
