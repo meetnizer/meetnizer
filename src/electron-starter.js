@@ -22,6 +22,8 @@ function createWindow () {
     slashes: true
   })
 
+  console.log('url', startUrl)
+
   mainWindow.loadURL(startUrl)
   // Open the DevTools.
   mainWindow.webContents.openDevTools()
